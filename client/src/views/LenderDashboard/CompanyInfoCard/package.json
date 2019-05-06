@@ -1,0 +1,6 @@
+{
+  "name": "CompanyInfoCard",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./CompanyInfoCard.js"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "FindCompanies",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./FindCompanies.js"
+}
