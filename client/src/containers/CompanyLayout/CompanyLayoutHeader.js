@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { DropdownMenu, DropdownToggle, Nav } from "reactstrap";
+import {
+  DropdownMenu,
+  DropdownToggle,
+  Nav,
+  Dropdown,
+  DropdownItem,
+  Badge
+} from "reactstrap";
 import PropTypes from "prop-types";
 import custom from "../../scss/_custom.scss";
 
@@ -22,6 +29,21 @@ const propTypes = {
 const defaultProps = {};
 
 class CompanyLayoutHeader extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      dropdownOpen: false
+    };
+  }
+
+  toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
@@ -49,20 +71,41 @@ class CompanyLayoutHeader extends Component {
           />
         </Link>
 
-        <Nav className="ml-auto" navbar>
-          <Link
-            to={{
-              pathname: "/company-dashboard/profile"
-            }}
-            className="profileAvatar"
-          >
+        <Dropdown
+          nav
+          isOpen={this.state.dropdownOpen}
+          toggle={this.toggle}
+          className="headerDropdown"
+        >
+          <DropdownToggle nav>
             <img
               src={avatar}
               className="img-avatar"
               alt="admin@bootstrapmaster.com"
             />
-          </Link>
-        </Nav>
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem header tag="div" className="text-center">
+              <strong>Account</strong>
+            </DropdownItem>
+
+            <DropdownItem>
+              <Link
+                to={{
+                  pathname: "/company-dashboard/profile"
+                }}
+                className="profileAvatar"
+              >
+                <i className="fa fa-user" /> Profile
+              </Link>
+            </DropdownItem>
+
+            <DropdownItem onClick={this.props.logout}>
+              <i className="fa fa-lock" /> Logout
+            </DropdownItem>
+            {/*<DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>*/}
+          </DropdownMenu>
+        </Dropdown>
       </React.Fragment>
     );
   }

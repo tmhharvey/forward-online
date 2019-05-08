@@ -15,7 +15,20 @@ import {
   CustomInput
 } from "reactstrap";
 import "./CompanyDashboard.scss";
-import { Link } from "react-router-dom";
+import { Link, HashRouter, Route, Switch } from "react-router-dom";
+import Loadable from "react-loadable";
+import CompanyRegister from "./CompanyRegister/CompanyRegister";
+
+const loading = () => (
+  <div className="animated fadeIn pt-3 text-center">
+    <div className="sk-spinner sk-spinner-pulse" />
+  </div>
+);
+
+const CompanyLogin = Loadable({
+  loader: () => import("./CompanyLogin/CompanyLogin"),
+  loading
+});
 
 class CompanyDashboard extends Component {
   constructor(props) {
@@ -26,12 +39,9 @@ class CompanyDashboard extends Component {
       large: false,
       small: false,
       primary: false,
-      companyFunded: false
+      companyFunded: false,
+      loggedOut: false
     };
-
-    // this.toggle = this.toggle.bind(this);
-    // this.toggleLarge = this.toggleLarge.bind(this);
-    // this.togglePrimary = this.togglePrimary.bind(this);
   }
 
   toggle = () => {
@@ -65,6 +75,7 @@ class CompanyDashboard extends Component {
 
   render() {
     var dashboardRenderedState = "";
+
     if (this.state.companyFunded) {
       dashboardRenderedState = (
         <div className="animated fadeIn">

@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const session = require("express-session");
 const path = require("path");
+require("dotenv").config();
 
 app.use(
   session({
@@ -26,16 +27,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ROUTING;
-const authController = require("./controllers/authController");
+const authController = require("./controllers/register");
 app.use("/auth", authController);
 
-const adminController = require("./controllers/adminController");
+const adminController = require("./controllers/api/adminController");
 app.use("/admin", adminController);
 
-const companyController = require("./controllers/companyController");
+const companyController = require("./controllers/api/companyController");
 app.use("/company", companyController);
 
-const lenderController = require("./controllers/lenderController");
+const lenderController = require("./controllers/api/lenderController");
 app.use("/lender", lenderController);
 
 const port = process.env.PORT || 9000;
