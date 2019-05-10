@@ -3,8 +3,6 @@ import { HashRouter, Route, Switch, Link } from "react-router-dom";
 // import { renderRoutes } from 'react-router-config';
 import Loadable from "react-loadable";
 import "./App.scss";
-import CompanyDashboard from "./views/CompanyDashboard/CompanyDashboard";
-
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">
     <div className="sk-spinner sk-spinner-pulse" />
@@ -17,19 +15,14 @@ const CompanyLayout = Loadable({
   loading
 });
 
-const LenderLayout = Loadable({
-  loader: () => import("./containers/LenderLayout"),
-  loading
-});
-
 // Pages
 const Login = Loadable({
   loader: () => import("./views/UI/Login/Login"),
   loading
 });
 
-const CompanyLogin = Loadable({
-  loader: () => import("./views/CompanyDashboard/CompanyLogin/CompanyLogin"),
+const CompanyDashboard = Loadable({
+  loader: () => import("./views/CompanyDashboard/CompanyDashboard"),
   loading
 });
 
@@ -56,7 +49,7 @@ class App extends Component {
       <>
         <HashRouter>
           <Switch>
-            <Route exact path="/" name="Login Page" component={CompanyLayout} />
+            <Route exact path="/" name="Login Page" component={Login} />
             {/* <Route
               exact
               path="/company-login"
@@ -82,11 +75,6 @@ class App extends Component {
               path="/company-dashboard"
               name="Home"
               component={CompanyLayout}
-            />
-            <Route
-              path="/lender-dashboard"
-              name="Home"
-              component={LenderLayout}
             />
           </Switch>
         </HashRouter>

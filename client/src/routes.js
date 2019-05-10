@@ -8,24 +8,8 @@ const CompanyProfile = React.lazy(() =>
   import("./views/CompanyDashboard/Profile/Profile")
 );
 
-const PaymentHistory = React.lazy(() =>
-  import("./views/CompanyDashboard/PaymentHistory/PaymentHistory")
-);
-
-const LenderDashboard = React.lazy(() =>
-  import("./views/LenderDashboard/LenderDashboard")
-);
-
-const FindCompanies = React.lazy(() =>
-  import("./views/LenderDashboard/FindCompanies/FindCompanies")
-);
-
-const CompanyInfoCard = React.lazy(() =>
-  import("./views/LenderDashboard/CompanyInfoCard/CompanyInfoCard")
-);
-
-const CompanyInfoProfile = React.lazy(() =>
-  import("./views/LenderDashboard/CompanyInfoProfile/CompanyInfoProfile")
+const ProductReport = React.lazy(() =>
+  import("./views/CompanyDashboard/ProductReport/ProductReport")
 );
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -45,36 +29,9 @@ const routes = [
     exact: true
   },
   {
-    path: "/company-dashboard/payment-history",
-    name: "Payment History",
-    component: PaymentHistory,
-    exact: true
-  },
-  {
-    path: "/lender-dashboard/home",
-    name: "Home",
-    component: LenderDashboard,
-    exact: true
-  },
-
-  //Lender User-type Routes
-
-  {
-    path: "/lender-dashboard/find-companies",
-    name: "Find Companies",
-    component: FindCompanies,
-    exact: true
-  },
-  {
-    path: "/lender-dashboard/company-info",
-    name: "Company Info",
-    component: CompanyInfoCard,
-    exact: true
-  },
-  {
-    path: "/lender-dashboard/company-info-advanced",
-    name: "Company Info",
-    component: CompanyInfoProfile,
+    path: "/company-dashboard/product-report",
+    name: "Performance Report",
+    component: ProductReport,
     exact: true
   }
 ];

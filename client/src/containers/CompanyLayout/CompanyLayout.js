@@ -31,7 +31,7 @@ class CompanyLayout extends Component {
     userId: "",
     userType: "",
     registration: false,
-    loggedOut: true
+    loggedOut: false
   };
 
   registrationRender = () => {
@@ -161,65 +161,65 @@ class CompanyLayout extends Component {
   );
 
   render() {
-    if (this.state.loggedOut && !this.state.registration) {
-      return (
-        <CompanyLogin
-          login={this.loginHandler}
-          registration={this.registrationRender}
-        />
-      );
-    } else if (this.state.registration && this.state.loggedOut) {
-      return <CompanyRegister register={this.registerHandler} />;
-    } else if (!this.state.loggedOut && this.state.userType === "C") {
-      return (
-        <div className="app">
-          <AppHeader fixed>
-            <Suspense fallback={this.loading()}>
-              <CompanyLayoutHeader logout={this.logoutHandler} />
+    // if (this.state.loggedOut && !this.state.registration) {
+    //   return (
+    //     <CompanyLogin
+    //       login={this.loginHandler}
+    //       registration={this.registrationRender}
+    //     />
+    //   );
+    // } else if (this.state.registration && this.state.loggedOut) {
+    //   return <CompanyRegister register={this.registerHandler} />;
+    // } else if (!this.state.loggedOut) {
+    return (
+      <div className="app">
+        <AppHeader fixed>
+          <Suspense fallback={this.loading()}>
+            <CompanyLayoutHeader logout={this.logoutHandler} />
+          </Suspense>
+        </AppHeader>
+        <div className="app-body">
+          <AppSidebar fixed display="lg">
+            <AppSidebarHeader />
+            <AppSidebarForm />
+            <Suspense>
+              <AppSidebarNav navConfig={navigation} {...this.props} />
             </Suspense>
-          </AppHeader>
-          <div className="app-body">
-            <AppSidebar fixed display="lg">
-              <AppSidebarHeader />
-              <AppSidebarForm />
-              <Suspense>
-                <AppSidebarNav navConfig={navigation} {...this.props} />
+            <AppSidebarFooter />
+            <AppSidebarMinimizer />
+          </AppSidebar>
+          <main className="main">
+            <AppBreadcrumb appRoutes={routes} />
+            <Container fluid>
+              <Suspense fallback={this.loading()}>
+                <Switch>
+                  {routes.map((route, idx) => {
+                    return route.component ? (
+                      <Route
+                        key={idx}
+                        path={route.path}
+                        exact={route.exact}
+                        name={route.name}
+                        render={props => <route.component {...props} />}
+                      />
+                    ) : null;
+                  })}
+                  <Redirect from="/" to="/company-dashboard/home" />
+                </Switch>
               </Suspense>
-              <AppSidebarFooter />
-              <AppSidebarMinimizer />
-            </AppSidebar>
-            <main className="main">
-              <AppBreadcrumb appRoutes={routes} />
-              <Container fluid>
-                <Suspense fallback={this.loading()}>
-                  <Switch>
-                    {routes.map((route, idx) => {
-                      return route.component ? (
-                        <Route
-                          key={idx}
-                          path={route.path}
-                          exact={route.exact}
-                          name={route.name}
-                          render={props => <route.component {...props} />}
-                        />
-                      ) : null;
-                    })}
-                    <Redirect from="/" to="/company-dashboard/home" />
-                  </Switch>
-                </Suspense>
-              </Container>
-            </main>
-          </div>
-          <AppFooter>
-            <Suspense fallback={this.loading()}>
-              <CompanyLayoutFooter />
-            </Suspense>
-          </AppFooter>
+            </Container>
+          </main>
         </div>
-      );
-    } else {
-      return <CompanyLogin login={this.loginHandler} />;
-    }
+        <AppFooter>
+          <Suspense fallback={this.loading()}>
+            <CompanyLayoutFooter />
+          </Suspense>
+        </AppFooter>
+      </div>
+    );
+    // } else {
+    //   return <CompanyLogin login={this.loginHandler} />;
+    // }
   }
 }
 

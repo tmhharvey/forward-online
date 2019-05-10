@@ -10,14 +10,24 @@ export default {
       },
       class: "mt-4" // optional class names space delimited list for title item ex: "text-center"
     },
+    // {
+    //   name: "Home",
+    //   url: "/company-dashboard/home",
+    //   icon: "cui-dashboard"
+    // },
     {
-      name: "Home",
-      url: "/company-dashboard/home",
-      icon: "cui-dashboard"
+      title: true,
+      name: "Reports",
+      wrapper: {
+        // optional wrapper object
+        element: "", // required valid HTML5 element tag
+        attributes: {} // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
+      },
+      class: "mt-4" // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: "Payment History",
-      url: "/company-dashboard/payment-history",
+      name: "Performance Report",
+      url: "/company-dashboard/product-report",
       icon: "fa fa-money"
     }
   ]

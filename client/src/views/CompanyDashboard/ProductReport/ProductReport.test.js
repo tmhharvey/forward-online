@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import FindCompanies from "./FindCompanies";
+import ValidationForms from "./ValidationForms";
 
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render(<FindCompanies />, div);
+  ReactDOM.render(<ProductReport />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
