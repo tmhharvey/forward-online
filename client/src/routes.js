@@ -18,7 +18,7 @@ const routes = [
 
   {
     path: "/company-dashboard/home",
-    name: "Home",
+    name: "Home Dashboard",
     component: CompanyDashboard,
     exact: true
   },
@@ -30,7 +30,7 @@ const routes = [
   },
   {
     path: "/company-dashboard/product-report",
-    name: "Performance Report",
+    name: "Performance By Product",
     component: ProductReport,
     exact: true
   }

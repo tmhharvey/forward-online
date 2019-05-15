@@ -58,8 +58,8 @@ class CompanyLayoutHeader extends Component {
           <AppNavbarBrand
             full={{
               src: logo,
-              width: 65,
-              height: 20,
+              width: 115,
+              height: 40,
               alt: "Seed Financial Logo"
             }}
             minimized={{

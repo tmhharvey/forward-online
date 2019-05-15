@@ -234,7 +234,6 @@ class CompanyDashboard extends React.Component {
   render() {
     return (
       <div>
-        <h1>Home Dashboard</h1>
         <Row>
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-primary">

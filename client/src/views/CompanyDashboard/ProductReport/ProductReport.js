@@ -93,8 +93,6 @@ class ProductReport extends React.Component {
   render() {
     return (
       <div>
-        <h1>Performance By Product</h1>
-
         <Row>
           <Col lg="12">
             <Card>
