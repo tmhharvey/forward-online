@@ -26,208 +26,67 @@ import {
   Table
 } from "reactstrap";
 import { Bar, Line } from "react-chartjs-2";
+import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import "./ProductReport.scss";
-import Widget04 from "../../UI/Widgets/Widget04";
-import GoogleMaps from "../../UI/GoogleMaps/GoogleMaps";
-const Widget03 = lazy(() => import("../../UI/Widgets/Widget03"));
 
-// Card Chart 1
-const cardChartData1 = {
+const line = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
   datasets: [
     {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,255,255,.2)",
-      borderColor: "rgba(255,255,255,.55)",
-      data: [40, 12, 34, 45, 80, 81, 78]
-    }
-  ]
-};
-
-const cardChartOpts1 = {
-  tooltips: {
-    enabled: false
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false
-      }
-    ],
-    yAxes: [
-      {
-        display: false
-      }
-    ]
-  },
-  elements: {
-    line: {
-      borderWidth: 2
+      label: "Sessions",
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: "rgb(32,168,216, 0.4)",
+      borderColor: "rgb(32,168,216)",
+      borderCapStyle: "butt",
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: "miter",
+      pointBorderColor: "rgb(32,168,216)",
+      pointBackgroundColor: "#fff",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgb(32,168,216)",
+      pointHoverBorderColor: "rgb(32,168,216)",
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [65, 59, 80, 81, 56, 55, 40]
     },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4
-    }
-  }
-};
-
-// Card Chart 2
-const cardChartData2 = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-    "January",
-    "February",
-    "March",
-    "April"
-  ],
-  datasets: [
     {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,255,255,.3)",
-      borderColor: "transparent",
-      data: [98, 18, 72, 54, 68, 32, 89, 34, 75, 40, 12, 34, 45, 80, 81, 78]
+      label: "Transactions",
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: "rgb(77,189,116, 0.4)",
+      borderColor: "rgb(77,189,116)",
+      borderCapStyle: "butt",
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: "miter",
+      pointBorderColor: "rgb(77,189,116)",
+      pointBackgroundColor: "#fff",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgb(77,189,116)",
+      pointHoverBorderColor: "rgba(220,220,220,1)",
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [35, 42, 64, 67, 21, 55, 48]
     }
   ]
 };
 
-const cardChartOpts2 = {
+const options = {
   tooltips: {
-    enabled: false
+    enabled: false,
+    custom: CustomTooltips
   },
-  maintainAspectRatio: false,
-  legend: {
-    display: false
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-        barPercentage: 0.6
-      }
-    ],
-    yAxes: [
-      {
-        display: false
-      }
-    ]
-  }
-};
-
-// Card Chart 3
-const cardChartData3 = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-    "January",
-    "February",
-    "March",
-    "April"
-  ],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,255,255,.3)",
-      borderColor: "transparent",
-      data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98]
-    }
-  ]
-};
-
-const cardChartOpts3 = {
-  tooltips: {
-    enabled: false
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-        barPercentage: 0.6
-      }
-    ],
-    yAxes: [
-      {
-        display: false
-      }
-    ]
-  }
-};
-
-// Card Chart 4
-const cardChartData4 = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,255,255,.2)",
-      borderColor: "rgba(255,255,255,.55)",
-      data: [45, 67, 55, 69, 34, 74, 93]
-    }
-  ]
-};
-
-const cardChartOpts4 = {
-  tooltips: {
-    enabled: false
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false
-      }
-    ],
-    yAxes: [
-      {
-        display: false
-      }
-    ]
-  },
-  elements: {
-    line: {
-      borderWidth: 2
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4
-    }
-  }
+  responsive: true,
+  maintainAspectRatio: false
 };
 
 class ProductReport extends React.Component {
@@ -235,221 +94,22 @@ class ProductReport extends React.Component {
     return (
       <div>
         <h1>Performance By Product</h1>
-        <Row>
-          <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-primary">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <i className="icon-people fa-2x" />
-                </ButtonGroup>
-                <div className="text-value">87,500</div>
-                <div> Average Sessions</div>
-              </CardBody>
-              <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
-                <Line
-                  data={cardChartData1}
-                  options={cardChartOpts1}
-                  height={70}
-                />
-              </div>
-            </Card>
-          </Col>
 
-          <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-success">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <i className="fa fa-credit-card fa-2x" />
-                </ButtonGroup>
-                <div className="text-value">3,448</div>
-                <div> Average Units Sold</div>
-              </CardBody>
-              <div
-                className="chart-wrapper mt-3 mx-3"
-                style={{ height: "70px" }}
-              >
-                <Bar
-                  data={cardChartData2}
-                  options={cardChartOpts2}
-                  height={70}
-                />
-              </div>
-            </Card>
-          </Col>
-          <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-danger">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <i className="fa fa-cart-plus fa-2x" />
-                </ButtonGroup>
-                <div className="text-value">3,448</div>
-                <div> Average Orders Made</div>
-              </CardBody>
-              <div
-                className="chart-wrapper mt-3 mx-3"
-                style={{ height: "70px" }}
-              >
-                <Bar
-                  data={cardChartData3}
-                  options={cardChartOpts3}
-                  height={70}
-                />
-              </div>
-            </Card>
-          </Col>
-
-          <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-info">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <i className="fa fa-refresh fa-2x" />
-                </ButtonGroup>
-                <div className="text-value">7%</div>
-                <div> Average Conversion %</div>
-              </CardBody>
-              <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
-                <Line
-                  data={cardChartData4}
-                  options={cardChartOpts4}
-                  height={70}
-                />
-              </div>
-            </Card>
-          </Col>
-        </Row>
         <Row>
-          <Col sm="12" lg="6">
-            <GoogleMaps />
-          </Col>
-          <Col sm="12" lg="6">
+          <Col lg="12">
             <Card>
-              <CardHeader>Global Sales Breakdown</CardHeader>
+              <CardHeader>
+                Line Chart
+                <div className="card-header-actions" />
+              </CardHeader>
+
               <CardBody>
-                <Table
-                  hover
-                  responsive
-                  className="table-outline mb-0 d-none d-sm-table"
-                >
-                  <thead className="thead-light">
-                    <tr>
-                      <th className="text-center">Country</th>
-                      <th className="text-center">-</th>
-                      <th className="text-center">Percentage</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-us h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-br h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-eu h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-in h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-fr h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-es h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-center">
-                        <i
-                          className="flag-icon flag-icon-gr h4 mb-0"
-                          title="br"
-                          id="br"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
-                      <td className="text-center">
-                        <strong>10%</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
+                <div className="chart-wrapper">
+                  <Line data={line} options={options} />
+                </div>
               </CardBody>
             </Card>
           </Col>
-        </Row>
-        <Row>
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>

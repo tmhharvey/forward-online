@@ -10,11 +10,11 @@ export default {
       },
       class: "mt-4" // optional class names space delimited list for title item ex: "text-center"
     },
-    // {
-    //   name: "Home",
-    //   url: "/company-dashboard/home",
-    //   icon: "cui-dashboard"
-    // },
+    {
+      name: "Home",
+      url: "/company-dashboard/home",
+      icon: "cui-dashboard"
+    },
     {
       title: true,
       name: "Reports",

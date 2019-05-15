@@ -15,14 +15,12 @@ class CompanyLayoutFooter extends Component {
     return (
       <React.Fragment>
         <span>
-          <a href="https://coreui.io">Seed Financial</a> &copy; 2019.
+          <a href="https://www.forward.online" target="_blank">
+            Forward.Online
+          </a>{" "}
+          &copy; 2019.
         </span>
-        <span className="ml-auto">
-          Powered by{" "}
-          <a href="https://teamlaunchable.com/" target="_blank">
-            Team Launchable
-          </a>
-        </span>
+        <span className="ml-auto" />
       </React.Fragment>
     );
   }
