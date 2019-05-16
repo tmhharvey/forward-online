@@ -29,9 +29,8 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import * as Yup from "yup";
-import "./ProductReport.scss";
+import "./CategoryReport.scss";
 
 const line = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -90,7 +89,7 @@ const options = {
   maintainAspectRatio: false
 };
 
-class ProductReport extends React.Component {
+class CategoryReport extends React.Component {
   state = {
     productTableData: []
   };
@@ -143,7 +142,6 @@ class ProductReport extends React.Component {
         </tr>
       );
     });
-
     return (
       <div>
         <Row>
@@ -214,4 +212,4 @@ class ProductReport extends React.Component {
   }
 }
 
-export default ProductReport;
+export default CategoryReport;

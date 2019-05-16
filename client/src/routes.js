@@ -12,6 +12,18 @@ const ProductReport = React.lazy(() =>
   import("./views/CompanyDashboard/ProductReport/ProductReport")
 );
 
+const CategoryReport = React.lazy(() =>
+  import("./views/CompanyDashboard/CategoryReport/CategoryReport")
+);
+
+const BrandReport = React.lazy(() =>
+  import("./views/CompanyDashboard/BrandReport/BrandReport")
+);
+
+const TrafficSourceReport = React.lazy(() =>
+  import("./views/CompanyDashboard/TrafficSourceReport/TrafficSourceReport")
+);
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   //Company User-type Routes
@@ -32,6 +44,24 @@ const routes = [
     path: "/company-dashboard/product-report",
     name: "Performance By Product",
     component: ProductReport,
+    exact: true
+  },
+  {
+    path: "/company-dashboard/category-report",
+    name: "Performance By Category",
+    component: CategoryReport,
+    exact: true
+  },
+  {
+    path: "/company-dashboard/brand-report",
+    name: "Performance By Brand",
+    component: BrandReport,
+    exact: true
+  },
+  {
+    path: "/company-dashboard/traffic-source-report",
+    name: "Performance By Traffic Source",
+    component: TrafficSourceReport,
     exact: true
   }
 ];

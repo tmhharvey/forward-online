@@ -29,9 +29,8 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import * as Yup from "yup";
-import "./ProductReport.scss";
+import "./TrafficSourceReport.scss";
 
 const line = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -90,7 +89,7 @@ const options = {
   maintainAspectRatio: false
 };
 
-class ProductReport extends React.Component {
+class TrafficSourceReport extends React.Component {
   state = {
     productTableData: []
   };
@@ -102,18 +101,26 @@ class ProductReport extends React.Component {
 
     const productTestData = [
       {
-        name: "Stark T-shirt Grey",
+        type: "Facebook",
         users: "113,450",
         sessions: "78,423",
-        orders: "23,581",
-        totalUnitsSold: "21,342",
+        bounceRate: "29%",
+        pagesPerSession: "3.2",
+        averageSessionDuration: "5 minutes",
+        conversionRate: "16%",
+        orders: "12,581",
+        totalUnitsSold: "9,342",
         averageOrderValue: "$19.99",
-        totalRevenue: "$426,626"
+        totalRevenue: "$186,746"
       },
       {
-        name: "Lannister T-shirt Red",
-        users: "90,450",
-        sessions: "34,423",
+        type: "Facebook",
+        users: "113,450",
+        sessions: "78,423",
+        bounceRate: "16%",
+        pagesPerSession: "2.8",
+        averageSessionDuration: "7 minutes",
+        conversionRate: "19%",
         orders: "12,581",
         totalUnitsSold: "9,342",
         averageOrderValue: "$19.99",
@@ -131,9 +138,13 @@ class ProductReport extends React.Component {
     renderedReportTable = productData.map(product => {
       return (
         <tr>
-          <td>{product.name}</td>
+          <td>{product.type}</td>
           <td>{product.users}</td>
           <td>{product.sessions}</td>
+          <td>{product.bounceRate}</td>
+          <td>{product.pagesPerSession}</td>
+          <td>{product.averageSessionDuration}</td>
+          <td>{product.conversionRate}</td>
           <td>{product.orders}</td>
           <td>{product.totalUnitsSold}</td>
           <td>{product.averageOrderValue}</td>
@@ -143,7 +154,6 @@ class ProductReport extends React.Component {
         </tr>
       );
     });
-
     return (
       <div>
         <Row>
@@ -170,9 +180,13 @@ class ProductReport extends React.Component {
                 <Table responsive striped>
                   <thead>
                     <tr>
-                      <th>Name</th>
+                      <th>Type</th>
                       <th>Users</th>
                       <th>Sessions</th>
+                      <th>Bounce Rate</th>
+                      <th>Pages Per Session</th>
+                      <th>Avg. Session Duration</th>
+                      <th>Conversion Rate</th>
                       <th>Orders</th>
                       <th>Total Units Sold</th>
                       <th>Average Order Value</th>
@@ -214,4 +228,4 @@ class ProductReport extends React.Component {
   }
 }
 
-export default ProductReport;
+export default TrafficSourceReport;

@@ -28,7 +28,22 @@ export default {
     {
       name: "Performance Report",
       url: "/company-dashboard/product-report",
-      icon: "fa fa-money"
+      icon: "fa fa-line-chart"
+    },
+    {
+      name: "Category Report",
+      url: "/company-dashboard/category-report",
+      icon: "fa fa-line-chart"
+    },
+    {
+      name: "Brand Report",
+      url: "/company-dashboard/brand-report",
+      icon: "fa fa-line-chart"
+    },
+    {
+      name: "Traffic Source Report",
+      url: "/company-dashboard/traffic-source-report",
+      icon: "fa fa-line-chart"
     }
   ]
 };
