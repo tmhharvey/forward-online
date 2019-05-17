@@ -171,11 +171,13 @@ class CompanyLayout extends Component {
     // } else if (this.state.registration && this.state.loggedOut) {
     //   return <CompanyRegister register={this.registerHandler} />;
     // } else if (!this.state.loggedOut) {
+    const { logoutHandler } = this.props.context;
+    // const { logoutHandler, state:{authenticated} } = this.props.context;
     return (
       <div className="app">
         <AppHeader fixed>
           <Suspense fallback={this.loading()}>
-            <CompanyLayoutHeader logout={this.logoutHandler} />
+            <CompanyLayoutHeader logout={logoutHandler} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
