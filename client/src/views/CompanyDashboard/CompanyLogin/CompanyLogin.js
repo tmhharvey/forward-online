@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Route } from "react-router-dom";
+import { Link, Route, Redirect } from "react-router-dom";
 import {
   Button,
   Card,
@@ -33,6 +33,63 @@ class CompanyLogin extends Component {
       [name]: value
     });
   };
+
+  loginHandler = async (e, email, password) => {
+    e.preventDefault();
+
+    try {
+      console.log("we're about to post login to the server");
+
+      const loginResponse = await fetch(
+        process.env.REACT_APP_BACKEND + `auth/login`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            userType: "C"
+          }),
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      const parsedRes = await loginResponse.json();
+      console.log("We are halfway through the process...");
+      console.log(parsedRes.status);
+
+      // If a successful response...
+
+      if (parsedRes.status === 200) {
+        console.log("got login data! Response is...");
+        console.log(parsedRes.data);
+
+        // clean incoming data
+
+        this.setState(
+          {
+            userId: parsedRes.data.userId,
+            userType: parsedRes.data.userType
+          },
+          () => {
+            this.props.context.successfulLogin();
+          }
+        );
+      } else {
+        console.log("failed to get login data!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  registerRedirect = e => {
+    e.preventDefault();
+
+    this.props.history.push("/register");
+  };
+
   render() {
     return (
       <>
@@ -79,10 +136,10 @@ class CompanyLogin extends Component {
                         <Row>
                           <Col xs="6">
                             <Button
-                              color="success"
+                              color="primary"
                               className="px-4"
                               onClick={e => {
-                                this.props.login(
+                                this.loginHandler(
                                   e,
                                   this.state.email,
                                   this.state.password
@@ -102,23 +159,25 @@ class CompanyLogin extends Component {
                     </CardBody>
                   </Card>
                   <Card
-                    className="text-white bg-success py-5 d-md-down-none"
+                    className="text-white bg-primary py-5 d-md-down-none"
                     style={{ width: "44%" }}
                   >
                     <CardBody className="text-center">
                       <div>
                         <h2>Sign up</h2>
                         <p>
-                          Sign up to create your profile and submit your
-                          application for Seed Financial's Funding Program!
+                          All the analytics you ever wanted, all in one
+                          dashboard. Sign-up today!
                         </p>
 
                         <Button
-                          color="success"
+                          color="primary"
                           className="mt-3"
                           active
                           tabIndex={-1}
-                          onClick={this.props.registration}
+                          onClick={e => {
+                            this.registerRedirect(e);
+                          }}
                         >
                           Register Now!
                         </Button>
@@ -130,9 +189,6 @@ class CompanyLogin extends Component {
             </Row>
           </Container>
         </div>
-        <Route
-          path="/company-register"
-          render={() => <CompanyRegister register={this.props.register} />}
         />
       </>
     );

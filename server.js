@@ -30,14 +30,8 @@ app.use(cors(corsOptions));
 const authController = require("./controllers/register");
 app.use("/auth", authController);
 
-const adminController = require("./controllers/api/adminController");
-app.use("/admin", adminController);
-
-const companyController = require("./controllers/api/companyController");
-app.use("/company", companyController);
-
-const lenderController = require("./controllers/api/lenderController");
-app.use("/lender", lenderController);
+// const companyController = require("./controllers/api/companyController");
+// app.use("/company", companyController);
 
 const port = process.env.PORT || 9000;
 

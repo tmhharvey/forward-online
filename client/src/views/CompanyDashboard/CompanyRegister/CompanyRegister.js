@@ -33,6 +33,61 @@ class CompanyRegister extends Component {
     });
   };
 
+  registerHandler = async (e, email, password) => {
+    e.preventDefault();
+
+    try {
+      console.log("we're about to post login to the server");
+      console.log(process.env.REACT_APP_BACKEND);
+      const registerResponse = await fetch(
+        process.env.REACT_APP_BACKEND + "auth/register",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: email,
+            password: password
+          }),
+          credentials: "include",
+          headers: {
+            "Content-type": "application/json"
+          }
+        }
+      );
+
+      const parsedRes = await registerResponse.json();
+      console.log("Register Response Data....." + parsedRes);
+
+      // If a successful response...
+
+      if (parsedRes.status === 200) {
+        console.log("Sucessful register! Response is...");
+        console.log(parsedRes.data);
+        console.log(parsedRes.data.userId);
+        console.log(parsedRes.data.userType);
+
+        // set state
+        const newUserType = parsedRes.data.userType;
+        this.setState(
+          {
+            userId: parsedRes.data.userId,
+            userType: newUserType
+          },
+          () => {
+            // window.location.href =
+            //   process.env.REACT_APP_BACKEND + "#/company-dashboard/profile";
+
+            localStorage.setItem("authenticated", true);
+            this.props.history.push("/company-dashboard/home");
+          }
+        );
+      } else {
+        console.log("Failed to register!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   render() {
     return (
       <div className="app flex-row align-items-center">
@@ -87,10 +142,10 @@ class CompanyRegister extends Component {
                     </InputGroup>
                     {this.state.password === this.state.passwordValidate ? (
                       <Button
-                        color="success"
+                        color="primary"
                         block
                         onClick={e => {
-                          this.props.register(
+                          this.registerHandler(
                             e,
                             this.state.email,
                             this.state.password

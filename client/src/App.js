@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { HashRouter, Route, Switch, Link } from "react-router-dom";
 // import { renderRoutes } from 'react-router-config';
 import Loadable from "react-loadable";
+import ProtectedRoute from "./ProtectedRoute";
+import ContextProvider, { AppContext } from "./ContextAPI/ContextProvider";
+import withContext from "./ContextAPI/Context_HOC";
+
 import "./App.scss";
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">
@@ -16,8 +20,8 @@ const CompanyLayout = Loadable({
 });
 
 // Pages
-const Login = Loadable({
-  loader: () => import("./views/UI/Login/Login"),
+const CompanyLogin = Loadable({
+  loader: () => import("./views/CompanyDashboard/CompanyLogin/CompanyLogin"),
   loading
 });
 
@@ -48,35 +52,28 @@ class App extends Component {
     return (
       <>
         <HashRouter>
-          <Switch>
-            <Route exact path="/" name="Login Page" component={Login} />
-            {/* <Route
-              exact
-              path="/company-login"
-              name="Login Page"
-              component={CompanyLogin}
-            />
-            <Route
-              exact
-              path="/company-register"
-              name="Register Page"
-              component={() => (
-                <CompanyRegister register={this.registerHandler} />
-              )}
-            /> */}
-            <Route
-              exact
-              path="/company-bank-authentication"
-              name="Bank Authentication"
-              component={CompanyBankAuth}
-            />
+          <ContextProvider>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                name="Login Page"
+                component={withContext(CompanyLogin)}
+              />
 
-            <Route
-              path="/company-dashboard"
-              name="Home"
-              component={CompanyLayout}
-            />
-          </Switch>
+              <Route
+                path="/register"
+                name="Register Page"
+                component={CompanyRegister}
+              />
+
+              <ProtectedRoute
+                path="/company-dashboard"
+                name="Home"
+                component={withContext(CompanyLayout)}
+              />
+            </Switch>
+          </ContextProvider>
         </HashRouter>
       </>
     );
