@@ -29,9 +29,23 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
+
+// React DateRangePicker
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
+
+//Dimensions
+import Select from "react-select";
+import "react-select/dist/react-select.min.css";
+import dimensionData from "./data/dimensions";
+
 import axios from "axios";
 import * as Yup from "yup";
 import "./ProductReport.scss";
+
+const dimensionOptions = dimensionData.options;
+var productTestData = [];
 
 const line = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -92,32 +106,58 @@ const options = {
 
 class ProductReport extends React.Component {
   state = {
-    productTableData: []
+    productTableData: [],
+    value: [""]
   };
 
   componentDidMount = async () => {
     // const response = await axios.get(
-    //   `/api/reporting/v0.1/ProductPerformanceReport`
+    //  "<API CALL HERE>"
     // );
 
-    const productTestData = [
+    //GROUP PRODUCT BY DATES
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_product_sku_and_day_of_week
+
+    //SORTING OPTIONS
+    // #/definitions/Summary_ProductPerformance_Report_SortOptions
+
+    //AVAILABLE DATA RETURNED BY SORTING
+
+    // {
+    //     brand,
+    //     sessions,
+    //     users,
+    //     total_units,
+    //     orders,
+    //     ecomm_revenue,
+    //     conversion_rate;
+    // }
+
+    // EXAMPLE API CALL??
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_product_sku_and_day_of_week/#/definitions/Summary_ProductPerformance_Report_SortOptions
+
+    productTestData = [
       {
-        name: "Stark T-shirt Grey",
-        users: "113,450",
-        sessions: "78,423",
-        orders: "23,581",
-        totalUnitsSold: "21,342",
-        averageOrderValue: "$19.99",
-        totalRevenue: "$426,626"
-      },
-      {
-        name: "Lannister T-shirt Red",
-        users: "90,450",
-        sessions: "34,423",
-        orders: "12,581",
-        totalUnitsSold: "9,342",
+        name: "T-shirt Stark Grey",
+        trafficSource: "Source 1",
+        users: "313,450",
+        sessions: "278,423",
+
+        orders: "36,581",
+        totalUnitsSold: "19,342",
         averageOrderValue: "$19.99",
         totalRevenue: "$186,746"
+      },
+      {
+        name: "T-shirt Lannister Red",
+        trafficSource: "Source 2",
+        users: "413,450",
+        sessions: "188,423",
+
+        orders: "24,581",
+        totalUnitsSold: "22,342",
+        averageOrderValue: "$19.99",
+        totalRevenue: "$146,746"
       }
     ];
 
@@ -125,12 +165,179 @@ class ProductReport extends React.Component {
       productTableData: productTestData
     });
   };
+
+  dimensionHandler = async () => {
+    var dimensionValue = [...this.state.value];
+    var updatedDimensionValue;
+    var finalDimensionValue = [];
+    if (dimensionValue[0]) {
+      var updatedDimensionValue = await dimensionValue.map(dimension => {
+        if (dimension.value === "Device") {
+          return [
+            {
+              dimension: "Smart Phone",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Tablet",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "2,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$36,746"
+            },
+            {
+              dimension: "Desktop",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              totalUnitsSold: "6,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$86,746"
+            },
+            {
+              dimension: "Smart Phone",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "5,581",
+              totalUnitsSold: "8,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$42,746"
+            },
+            {
+              dimension: "Tablet",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "4,581",
+              totalUnitsSold: "7,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$58,746"
+            },
+            {
+              dimension: "Desktop",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "9,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$86,746"
+            }
+          ];
+        } else if (dimension.value === "State") {
+          return [
+            {
+              dimension: "Colorado",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Colorado",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            }
+          ];
+        }
+      });
+
+      finalDimensionValue = updatedDimensionValue[0];
+      console.log("=== final Dimension Final ===");
+      console.log(finalDimensionValue);
+
+      this.setState({
+        productTableData: finalDimensionValue
+      });
+    } else {
+      updatedDimensionValue = [
+        {
+          name: "T-shirt Stark Grey",
+          users: "313,450",
+          sessions: "278,423",
+
+          orders: "36,581",
+          totalUnitsSold: "19,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$186,746"
+        },
+        {
+          name: "T-shirt Stark Grey",
+          users: "413,450",
+          sessions: "188,423",
+
+          orders: "24,581",
+          totalUnitsSold: "22,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$146,746"
+        }
+      ];
+      console.log(updatedDimensionValue);
+      this.setState({
+        productTableData: updatedDimensionValue
+      });
+    }
+  };
+
+  dateChangeHandler = e => {
+    e.preventDefault();
+
+    console.log(this.state.startDate._d);
+    console.log(this.state.endDate._d);
+  };
+
+  saveChanges = value => {
+    console.log("==== current state value ====");
+    console.log(this.state.value);
+    var resetValue = value;
+    if (value.length > 1) {
+      resetValue.shift();
+      console.log(resetValue);
+    }
+    this.setState(
+      {
+        value: resetValue
+      },
+      () => {
+        console.log("==== Should be 1 value ====");
+        console.log(this.state.value);
+        this.dimensionHandler();
+      }
+    );
+  };
   render() {
     var renderedReportTable = "";
     var productData = this.state.productTableData;
     renderedReportTable = productData.map(product => {
       return (
         <tr>
+          {this.state.value[0] ? <td>{product.dimension}</td> : null}
           <td>{product.name}</td>
           <td>{product.users}</td>
           <td>{product.sessions}</td>
@@ -146,6 +353,42 @@ class ProductReport extends React.Component {
 
     return (
       <div>
+        <Row>
+          <Col lg="5">
+            <Card>
+              {/* <CardHeader>
+                <i className="icon-calendar" />
+                <strong>Report Date Range</strong>{" "}
+                <div className="card-header-actions" />
+              </CardHeader> */}
+              <CardBody>
+                <DateRangePicker
+                  startDate={this.state.startDate}
+                  startDateId="startDate"
+                  endDate={this.state.endDate}
+                  endDateId="endDate"
+                  onDatesChange={({ startDate, endDate }) =>
+                    this.setState({ startDate, endDate })
+                  }
+                  focusedInput={this.state.focusedInput}
+                  onFocusChange={focusedInput =>
+                    this.setState({ focusedInput })
+                  }
+                  orientation={this.state.orientation}
+                  openDirection={this.state.openDirection}
+                />
+                <Button
+                  type="button"
+                  color="success"
+                  className="ml-4 mt-1"
+                  onClick={e => this.dateChangeHandler(e)}
+                >
+                  Update
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col lg="12">
             <Card>
@@ -165,11 +408,30 @@ class ProductReport extends React.Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify" />
+                Table Data
               </CardHeader>
+
               <CardBody>
+                <Col sm="12" lg="3">
+                  <p>
+                    <i className="icon-wrench mr-2" />
+                    <strong>Secondary Dimensions:</strong>
+                  </p>
+
+                  <Select
+                    name="form-field-name2"
+                    value={this.state.value}
+                    options={dimensionOptions}
+                    onChange={this.saveChanges}
+                    multi
+                    className="mb-4"
+                  />
+                </Col>
+
                 <Table responsive striped>
                   <thead>
                     <tr>
+                      {this.state.value[0] ? <th>Dimension</th> : null}
                       <th>Name</th>
                       <th>Users</th>
                       <th>Sessions</th>

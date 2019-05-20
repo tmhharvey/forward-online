@@ -29,8 +29,22 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
+
+// React DateRangePicker
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
+
+//Dimensions
+import Select from "react-select";
+import "react-select/dist/react-select.min.css";
+import dimensionData from "./data/dimensions";
+
 import * as Yup from "yup";
 import "./TrafficSourceReport.scss";
+
+const dimensionOptions = dimensionData.options;
+var productTestData = [];
 
 const line = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -91,40 +105,72 @@ const options = {
 
 class TrafficSourceReport extends React.Component {
   state = {
-    productTableData: []
+    productTableData: [],
+    value: [""]
   };
 
   componentDidMount = async () => {
+    // call the /Security/GetToken with creds to get a JWT
     // const response = await axios.get(
-    //   `/api/reporting/v0.1/ProductPerformanceReport`
+    //  "/Security/GetToken"
     // );
+    // const reportData = await axios.get(
+    //  "<API CALL HERE>"
+    // );
+    //GROUP CATEGORY BY DATES
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_channel_and_day_of_week
+    //SORTING OPTIONS
+    // #/definitions/Summary_ProductPerformance_Report_SortOptions
+    //AVAILABLE DATA RETURNED BY SORTING
+    // {
+    //     brand,
+    //     sessions,
+    //     users,
+    //     total_units,
+    //     orders,
+    //     ecomm_revenue,
+    //     conversion_rate;
+    // }
+    // EXAMPLE API CALL??
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_channel_and_day_of_week/#/definitions/Summary_ProductPerformance_Report_SortOptions
+    //API CALL 2: Web Events Detail Report
+    // /api/reporting/v0.1/WebEventsDetailReport/GetReportResults
+    //AVAILABLE DATA RETURNED BY SORTING
+    // {
+    //    bounceRate: "29%",
+    //     pagesPerSession: "3.2",
+    //     averageSessionDuration: "5 minutes",
+    //     conversionRate: "16%",
+    // }
+    // EXAMPLE API CALL??
+    // /api/reporting/v0.1/WebEventsDetailReport/GetReportResults/#/definitions/WebEvents_Permutations
 
-    const productTestData = [
+    productTestData = [
       {
-        type: "Facebook",
-        users: "113,450",
-        sessions: "78,423",
+        trafficSource: "Source 1",
+        users: "313,450",
+        sessions: "278,423",
         bounceRate: "29%",
-        pagesPerSession: "3.2",
-        averageSessionDuration: "5 minutes",
+        pagesPerSession: "4.2",
+        averageSessionDuration: "6 minutes",
         conversionRate: "16%",
-        orders: "12,581",
-        totalUnitsSold: "9,342",
+        orders: "36,581",
+        totalUnitsSold: "19,342",
         averageOrderValue: "$19.99",
         totalRevenue: "$186,746"
       },
       {
-        type: "Facebook",
-        users: "113,450",
-        sessions: "78,423",
-        bounceRate: "16%",
-        pagesPerSession: "2.8",
-        averageSessionDuration: "7 minutes",
-        conversionRate: "19%",
-        orders: "12,581",
-        totalUnitsSold: "9,342",
+        trafficSource: "Source 2",
+        users: "413,450",
+        sessions: "188,423",
+        bounceRate: "29%",
+        pagesPerSession: "3.2",
+        averageSessionDuration: "5 minutes",
+        conversionRate: "16%",
+        orders: "24,581",
+        totalUnitsSold: "22,342",
         averageOrderValue: "$19.99",
-        totalRevenue: "$186,746"
+        totalRevenue: "$146,746"
       }
     ];
 
@@ -132,13 +178,198 @@ class TrafficSourceReport extends React.Component {
       productTableData: productTestData
     });
   };
+
+  dimensionHandler = async () => {
+    var dimensionValue = [...this.state.value];
+    var updatedDimensionValue;
+    var finalDimensionValue = [];
+    if (dimensionValue[0]) {
+      var updatedDimensionValue = await dimensionValue.map(dimension => {
+        if (dimension.value === "Device") {
+          return [
+            {
+              dimension: "Smart Phone",
+              trafficSource: "Source 1",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "29%",
+              pagesPerSession: "3.2",
+              averageSessionDuration: "5 minutes",
+              conversionRate: "16%",
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Tablet",
+              trafficSource: "Source 1",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "16%",
+              pagesPerSession: "2.8",
+              averageSessionDuration: "7 minutes",
+              conversionRate: "19%",
+              orders: "12,581",
+              totalUnitsSold: "2,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$36,746"
+            },
+            {
+              dimension: "Desktop",
+              trafficSource: "Source 1",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "16%",
+              pagesPerSession: "2.8",
+              averageSessionDuration: "7 minutes",
+              conversionRate: "19%",
+              orders: "3,581",
+              totalUnitsSold: "6,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$86,746"
+            },
+            {
+              dimension: "Smart Phone",
+              trafficSource: "Source 2",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "29%",
+              pagesPerSession: "3.2",
+              averageSessionDuration: "5 minutes",
+              conversionRate: "16%",
+              orders: "5,581",
+              totalUnitsSold: "8,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$42,746"
+            },
+            {
+              dimension: "Tablet",
+              trafficSource: "Source 2",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "16%",
+              pagesPerSession: "2.8",
+              averageSessionDuration: "7 minutes",
+              conversionRate: "19%",
+              orders: "4,581",
+              totalUnitsSold: "7,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$58,746"
+            },
+            {
+              dimension: "Desktop",
+              trafficSource: "Source 2",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "16%",
+              pagesPerSession: "2.8",
+              averageSessionDuration: "7 minutes",
+              conversionRate: "19%",
+              orders: "12,581",
+              totalUnitsSold: "9,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$86,746"
+            }
+          ];
+        } else if (dimension.value === "State") {
+          return [
+            {
+              trafficSource: "Source 1",
+              dimension: "Colorado",
+              users: "113,450",
+              sessions: "78,423",
+              bounceRate: "29%",
+              pagesPerSession: "3.2",
+              averageSessionDuration: "5 minutes",
+              conversionRate: "16%",
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            }
+          ];
+        }
+      });
+
+      finalDimensionValue = updatedDimensionValue[0];
+      console.log("=== final Dimension Final ===");
+      console.log(finalDimensionValue);
+
+      this.setState({
+        productTableData: finalDimensionValue
+      });
+    } else {
+      updatedDimensionValue = [
+        {
+          trafficSource: "Source 1",
+          users: "313,450",
+          sessions: "278,423",
+          bounceRate: "29%",
+          pagesPerSession: "4.2",
+          averageSessionDuration: "6 minutes",
+          conversionRate: "16%",
+          orders: "36,581",
+          totalUnitsSold: "19,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$186,746"
+        },
+        {
+          trafficSource: "Source 2",
+          users: "413,450",
+          sessions: "188,423",
+          bounceRate: "29%",
+          pagesPerSession: "3.2",
+          averageSessionDuration: "5 minutes",
+          conversionRate: "16%",
+          orders: "24,581",
+          totalUnitsSold: "22,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$146,746"
+        }
+      ];
+      console.log(updatedDimensionValue);
+      this.setState({
+        productTableData: updatedDimensionValue
+      });
+    }
+  };
+
+  dateChangeHandler = e => {
+    e.preventDefault();
+
+    console.log(this.state.startDate._d);
+    console.log(this.state.endDate._d);
+  };
+
+  saveChanges = value => {
+    console.log("==== current state value ====");
+    console.log(this.state.value);
+    var resetValue = value;
+    if (value.length > 1) {
+      resetValue.shift();
+      console.log(resetValue);
+    }
+    this.setState(
+      {
+        value: resetValue
+      },
+      () => {
+        console.log("==== Should be 1 value ====");
+        console.log(this.state.value);
+        this.dimensionHandler();
+      }
+    );
+  };
+
   render() {
     var renderedReportTable = "";
     var productData = this.state.productTableData;
     renderedReportTable = productData.map(product => {
       return (
         <tr>
-          <td>{product.type}</td>
+          <td>{product.trafficSource}</td>
+          {this.state.value[0] ? <td>{product.dimension}</td> : null}
           <td>{product.users}</td>
           <td>{product.sessions}</td>
           <td>{product.bounceRate}</td>
@@ -157,10 +388,46 @@ class TrafficSourceReport extends React.Component {
     return (
       <div>
         <Row>
+          <Col lg="5">
+            <Card>
+              {/* <CardHeader>
+                <i className="icon-calendar" />
+                <strong>Report Date Range</strong>{" "}
+                <div className="card-header-actions" />
+              </CardHeader> */}
+              <CardBody>
+                <DateRangePicker
+                  startDate={this.state.startDate}
+                  startDateId="startDate"
+                  endDate={this.state.endDate}
+                  endDateId="endDate"
+                  onDatesChange={({ startDate, endDate }) =>
+                    this.setState({ startDate, endDate })
+                  }
+                  focusedInput={this.state.focusedInput}
+                  onFocusChange={focusedInput =>
+                    this.setState({ focusedInput })
+                  }
+                  orientation={this.state.orientation}
+                  openDirection={this.state.openDirection}
+                />
+                <Button
+                  type="button"
+                  color="success"
+                  className="ml-4 mt-1"
+                  onClick={e => this.dateChangeHandler(e)}
+                >
+                  Update
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
           <Col lg="12">
             <Card>
               <CardHeader>
-                Line Chart
+                Chart Data
                 <div className="card-header-actions" />
               </CardHeader>
 
@@ -175,12 +442,28 @@ class TrafficSourceReport extends React.Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify" />
+                Table Data
               </CardHeader>
+
               <CardBody>
+                <p>
+                  <i className="icon-wrench mr-2" />
+                  <strong>Secondary Dimensions:</strong>
+                </p>
+
+                <Select
+                  name="form-field-name2"
+                  value={this.state.value}
+                  options={dimensionOptions}
+                  onChange={this.saveChanges}
+                  multi
+                  className="mb-4"
+                />
                 <Table responsive striped>
                   <thead>
                     <tr>
-                      <th>Type</th>
+                      <th>Traffic Source</th>
+                      {this.state.value[0] ? <th>Dimension</th> : null}
                       <th>Users</th>
                       <th>Sessions</th>
                       <th>Bounce Rate</th>

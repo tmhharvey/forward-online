@@ -29,6 +29,12 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
+
+// React DateRangePicker
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
+
 import * as Yup from "yup";
 import "./CategoryReport.scss";
 
@@ -96,9 +102,29 @@ class CategoryReport extends React.Component {
 
   componentDidMount = async () => {
     // const response = await axios.get(
-    //   `/api/reporting/v0.1/ProductPerformanceReport`
+    //  "<API CALL HERE>"
     // );
 
+    //GROUP CATEGORY BY DATES
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_category_and_day_of_week
+
+    //SORTING OPTIONS
+    // #/definitions/Summary_ProductPerformance_Report_SortOptions
+
+    //AVAILABLE DATA RETURNED BY SORTING
+
+    // {
+    //     brand,
+    //     sessions,
+    //     users,
+    //     total_units,
+    //     orders,
+    //     ecomm_revenue,
+    //     conversion_rate;
+    // }
+
+    // EXAMPLE API CALL??
+    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_category_and_day_of_week/#/definitions/Summary_ProductPerformance_Report_SortOptions
     const productTestData = [
       {
         name: "Stark T-shirt Grey",
@@ -124,6 +150,13 @@ class CategoryReport extends React.Component {
       productTableData: productTestData
     });
   };
+
+  dateChangeHandler = e => {
+    e.preventDefault();
+
+    console.log(this.state.startDate._d);
+    console.log(this.state.endDate._d);
+  };
   render() {
     var renderedReportTable = "";
     var productData = this.state.productTableData;
@@ -144,6 +177,42 @@ class CategoryReport extends React.Component {
     });
     return (
       <div>
+        <Row>
+          <Col lg="5">
+            <Card>
+              {/* <CardHeader>
+                <i className="icon-calendar" />
+                <strong>Report Date Range</strong>{" "}
+                <div className="card-header-actions" />
+              </CardHeader> */}
+              <CardBody>
+                <DateRangePicker
+                  startDate={this.state.startDate}
+                  startDateId="startDate"
+                  endDate={this.state.endDate}
+                  endDateId="endDate"
+                  onDatesChange={({ startDate, endDate }) =>
+                    this.setState({ startDate, endDate })
+                  }
+                  focusedInput={this.state.focusedInput}
+                  onFocusChange={focusedInput =>
+                    this.setState({ focusedInput })
+                  }
+                  orientation={this.state.orientation}
+                  openDirection={this.state.openDirection}
+                />
+                <Button
+                  type="button"
+                  color="success"
+                  className="ml-4 mt-1"
+                  onClick={e => this.dateChangeHandler(e)}
+                >
+                  Update
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col lg="12">
             <Card>

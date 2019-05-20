@@ -50,6 +50,7 @@ class CompanyLayoutHeader extends Component {
 
     return (
       <React.Fragment>
+        <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <Link
           to={{
             pathname: "/company-dashboard/home"
