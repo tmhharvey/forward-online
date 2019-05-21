@@ -38,13 +38,14 @@ import "react-dates/lib/css/_datepicker.css";
 //Dimensions
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
-import dimensionData from "./data/dimensions";
+import tableOptions from "./data/dimensions";
 
 import axios from "axios";
 import * as Yup from "yup";
 import "./ProductReport.scss";
 
-const dimensionOptions = dimensionData.options;
+const dimensionOptions = tableOptions.dimensions;
+const displayOptions = tableOptions.displayOptions;
 var productTestData = [];
 
 const line = {
@@ -104,10 +105,37 @@ const options = {
   maintainAspectRatio: false
 };
 
+const initialValues = {
+  accept: false
+};
+
 class ProductReport extends React.Component {
   state = {
     productTableData: [],
-    value: [""]
+    dimension: [""],
+    displayOptions: {
+      users: true
+    }
+  };
+
+  handleDisplayChange = event => {
+    var target = event.target;
+    var name = target.name;
+    var currentCheck = { ...this.state.displayOptions.users };
+    var newCheck = !currentCheck;
+
+    console.log("NEW target checked: " + newCheck);
+
+    this.setState(
+      {
+        displayOptions: {
+          [name]: newCheck
+        }
+      },
+      () => {
+        console.log(this.state.displayOptions);
+      }
+    );
   };
 
   componentDidMount = async () => {
@@ -167,7 +195,7 @@ class ProductReport extends React.Component {
   };
 
   dimensionHandler = async () => {
-    var dimensionValue = [...this.state.value];
+    var dimensionValue = [...this.state.dimension];
     var updatedDimensionValue;
     var finalDimensionValue = [];
     if (dimensionValue[0]) {
@@ -254,7 +282,167 @@ class ProductReport extends React.Component {
               totalRevenue: "$76,746"
             },
             {
+              dimension: "Florida",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
               dimension: "Colorado",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Florida",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            }
+          ];
+        } else if (dimension.value === "Hour") {
+          return [
+            {
+              dimension: "12:00",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "13:00",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "14:00",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "12:00",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "13:00",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "14:00",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            }
+          ];
+        } else if (dimension.value === "Day of Week") {
+          return [
+            {
+              dimension: "Monday",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Tuesday",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Wednesday",
+              name: "T-shirt Stark Grey",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Monday",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Tuesday",
+              name: "T-shirt Lannister Red",
+              users: "113,450",
+              sessions: "78,423",
+
+              orders: "12,581",
+              totalUnitsSold: "5,342",
+              averageOrderValue: "$19.99",
+              totalRevenue: "$76,746"
+            },
+            {
+              dimension: "Wednesday",
               name: "T-shirt Lannister Red",
               users: "113,450",
               sessions: "78,423",
@@ -312,32 +500,31 @@ class ProductReport extends React.Component {
     console.log(this.state.endDate._d);
   };
 
-  saveChanges = value => {
-    console.log("==== current state value ====");
-    console.log(this.state.value);
-    var resetValue = value;
-    if (value.length > 1) {
+  saveChanges = dimension => {
+    var resetValue = dimension;
+    if (dimension.length > 1) {
       resetValue.shift();
-      console.log(resetValue);
     }
     this.setState(
       {
-        value: resetValue
+        dimension: resetValue
       },
       () => {
         console.log("==== Should be 1 value ====");
-        console.log(this.state.value);
+        console.log(this.state.dimension);
         this.dimensionHandler();
       }
     );
   };
+
+  falseFunc = () => false;
   render() {
     var renderedReportTable = "";
     var productData = this.state.productTableData;
     renderedReportTable = productData.map(product => {
       return (
         <tr>
-          {this.state.value[0] ? <td>{product.dimension}</td> : null}
+          {this.state.dimension[0] ? <td>{product.dimension}</td> : null}
           <td>{product.name}</td>
           <td>{product.users}</td>
           <td>{product.sessions}</td>
@@ -376,6 +563,7 @@ class ProductReport extends React.Component {
                   }
                   orientation={this.state.orientation}
                   openDirection={this.state.openDirection}
+                  isOutsideRange={this.falseFunc}
                 />
                 <Button
                   type="button"
@@ -412,26 +600,44 @@ class ProductReport extends React.Component {
               </CardHeader>
 
               <CardBody>
-                <Col sm="12" lg="3">
-                  <p>
-                    <i className="icon-wrench mr-2" />
-                    <strong>Secondary Dimensions:</strong>
-                  </p>
+                <Row>
+                  <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Secondary Dimensions:</strong>
+                    </p>
 
-                  <Select
-                    name="form-field-name2"
-                    value={this.state.value}
-                    options={dimensionOptions}
-                    onChange={this.saveChanges}
-                    multi
-                    className="mb-4"
-                  />
-                </Col>
+                    <Select
+                      name="form-field-name2"
+                      value={this.state.dimension}
+                      options={dimensionOptions}
+                      onChange={this.saveChanges}
+                      multi
+                      className="mb-4"
+                    />
+                  </Col>
+                  {/* <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Display Options:</strong>
+                    </p>
+                    <FormGroup>
+                      <CustomInput
+                        type="checkbox"
+                        id="users"
+                        label="users"
+                        name="users"
+                        onChange={this.handleDisplayChange}
+                        checked={this.state.displayOptions.users}
+                      />
+                    </FormGroup>
+                  </Col> */}
+                </Row>
 
                 <Table responsive striped>
                   <thead>
                     <tr>
-                      {this.state.value[0] ? <th>Dimension</th> : null}
+                      {this.state.dimension[0] ? <th>Dimension</th> : null}
                       <th>Name</th>
                       <th>Users</th>
                       <th>Sessions</th>
