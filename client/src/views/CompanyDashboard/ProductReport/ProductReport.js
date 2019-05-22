@@ -115,70 +115,106 @@ class ProductReport extends React.Component {
     dimension: [""],
     displayOptions: {
       users: true
+    },
+    dateRange: false
+  };
+
+  // handleDisplayChange = event => {
+  //   var target = event.target;
+  //   var name = target.name;
+  //   var currentCheck = { ...this.state.displayOptions.users };
+  //   var newCheck = !currentCheck;
+
+  //   console.log("NEW target checked: " + newCheck);
+
+  //   this.setState(
+  //     {
+  //       displayOptions: {
+  //         [name]: newCheck
+  //       }
+  //     },
+  //     () => {
+  //       console.log(this.state.displayOptions);
+  //     }
+  //   );
+  // };
+
+  componentDidMount = async () => {
+    //Default API call with no Second Dimension
+    // const response = await axios.get(
+    //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_product_sku&sortOption=users&sortOrientation=Asc"
+    // );
+
+    // clean the data
+    // const parsedResp = response.(whatever)
+
+    //set the state object based on the clean data and update state
+    // productTestData = [{parsedResp.name, parsedResp.trafficSource}]
+    if (!this.state.dateRange) {
+      productTestData = [
+        {
+          name: "T-shirt Stark Grey",
+          trafficSource: "Source 1",
+          users: "313,450",
+          sessions: "278,423",
+
+          orders: "36,581",
+          totalUnitsSold: "19,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$186,746"
+        },
+        {
+          name: "T-shirt Lannister Red",
+          trafficSource: "Source 2",
+          users: "413,450",
+          sessions: "188,423",
+
+          orders: "24,581",
+          totalUnitsSold: "22,342",
+          averageOrderValue: "$19.99",
+          totalRevenue: "$146,746"
+        }
+      ];
+
+      this.setState({
+        productTableData: productTestData
+      });
     }
   };
 
-  handleDisplayChange = event => {
-    var target = event.target;
-    var name = target.name;
-    var currentCheck = { ...this.state.displayOptions.users };
-    var newCheck = !currentCheck;
+  dateChangeHandler = async e => {
+    e.preventDefault();
 
-    console.log("NEW target checked: " + newCheck);
+    var fromDate = this.state.startDate._d;
+    var toDate = this.state.endDate._d;
 
-    this.setState(
-      {
-        displayOptions: {
-          [name]: newCheck
-        }
-      },
-      () => {
-        console.log(this.state.displayOptions);
-      }
-    );
-  };
+    // clean the fromDate and toDate for the API call
+    //  <code block>
 
-  componentDidMount = async () => {
+    //Date range API Call
     // const response = await axios.get(
-    //  "<API CALL HERE>"
+    //  `api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&fromDate=${fromDate}&toDate=${toDate}&permutation=group_by_product_sku&sortOption=users&sortOrientation=Asc`
     // );
 
-    //GROUP PRODUCT BY DATES
-    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_product_sku_and_day_of_week
+    // clean the data
+    // const parsedResp = response.(whatever)
 
-    //SORTING OPTIONS
-    // #/definitions/Summary_ProductPerformance_Report_SortOptions
-
-    //AVAILABLE DATA RETURNED BY SORTING
-
-    // {
-    //     brand,
-    //     sessions,
-    //     users,
-    //     total_units,
-    //     orders,
-    //     ecomm_revenue,
-    //     conversion_rate;
-    // }
-
-    // EXAMPLE API CALL??
-    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_product_sku_and_day_of_week/#/definitions/Summary_ProductPerformance_Report_SortOptions
-
+    //set the state object based on the clean data and update state
+    // productTestData = [{parsedResp.name, parsedResp.trafficSource}]
     productTestData = [
       {
+        date: "May 21, 2019",
         name: "T-shirt Stark Grey",
-        trafficSource: "Source 1",
         users: "313,450",
         sessions: "278,423",
-
         orders: "36,581",
         totalUnitsSold: "19,342",
         averageOrderValue: "$19.99",
         totalRevenue: "$186,746"
       },
       {
+        date: "May 21, 2019",
         name: "T-shirt Lannister Red",
-        trafficSource: "Source 2",
         users: "413,450",
         sessions: "188,423",
 
@@ -190,7 +226,8 @@ class ProductReport extends React.Component {
     ];
 
     this.setState({
-      productTableData: productTestData
+      productTableData: productTestData,
+      dateRange: true
     });
   };
 
@@ -201,6 +238,21 @@ class ProductReport extends React.Component {
     if (dimensionValue[0]) {
       var updatedDimensionValue = await dimensionValue.map(dimension => {
         if (dimension.value === "Device") {
+          //====  check if there is a specified date range
+          // if (this.state.datRange) {
+          //   var fromDate = this.state.startDate._d;
+          //   var toDate = this.state.endDate._d;
+
+          //==== clean up the date data so that the API call can use it
+          //        const response = await axios.get(
+          //          "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel_and_day_of_week&sortOption=users&sortOrientation=Asc"
+          //         );
+          // } else {
+
+          //==== DEVICE normal Dimension API call
+          // const response = await axios.get(
+          //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel&sortOption=users&sortOrientation=Asc"
+          // );
           return [
             {
               dimension: "Smart Phone",
@@ -493,13 +545,6 @@ class ProductReport extends React.Component {
     }
   };
 
-  dateChangeHandler = e => {
-    e.preventDefault();
-
-    console.log(this.state.startDate._d);
-    console.log(this.state.endDate._d);
-  };
-
   saveChanges = dimension => {
     var resetValue = dimension;
     if (dimension.length > 1) {
@@ -525,6 +570,7 @@ class ProductReport extends React.Component {
       return (
         <tr>
           {this.state.dimension[0] ? <td>{product.dimension}</td> : null}
+          {this.state.dateRange ? <td>{product.date}</td> : null}
           <td>{product.name}</td>
           <td>{product.users}</td>
           <td>{product.sessions}</td>
@@ -638,6 +684,7 @@ class ProductReport extends React.Component {
                   <thead>
                     <tr>
                       {this.state.dimension[0] ? <th>Dimension</th> : null}
+                      {this.state.dateRange ? <th>Date</th> : null}
                       <th>Name</th>
                       <th>Users</th>
                       <th>Sessions</th>
