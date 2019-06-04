@@ -14,7 +14,7 @@
           a,
           .btn {
             align-items: center;
-            color: blue;
+            color: #27667c;
             display: flex;
             justify-content: space-between;
             width: 100%;
@@ -60,11 +60,12 @@
     .pagination-buttons {
       ul {
         li {
+          cursor: pointer;
           &:first-child {
             &.disabled {
               opacity: 0.5;
               a {
-                color: teal !important;
+                color: white !important;
               }
             }
           }
@@ -73,7 +74,7 @@
               opacity: 0.5;
 
               a {
-                color: teal !important;
+                color: white !important;
               }
             }
           }
@@ -82,8 +83,14 @@
     }
 
     li {
+      background-color: #20a8d8;
+      margin: 0 3px 0 3px;
+      padding: 0.5rem 0.5rem 0.5rem 1rem;
+
       a {
-        color: teal !important;
+        color: white !important;
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
       }
     }
 

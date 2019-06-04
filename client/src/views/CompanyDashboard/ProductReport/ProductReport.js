@@ -80,7 +80,7 @@ const line = {
       data: [65, 59, 80, 81, 56, 55, 40]
     },
     {
-      label: "Transactions",
+      label: "Total Orders",
       fill: false,
       lineTension: 0.1,
       backgroundColor: "rgb(77,189,116, 0.4)",
@@ -112,44 +112,14 @@ const options = {
   maintainAspectRatio: false
 };
 
-const columns = [
-  {
-    value: "Brand",
-    elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-  },
-  {
-    value: "Sessions",
-    elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
-  },
-  {
-    value: "Users",
-    elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
-  },
-  {
-    value: "Total Units",
-    elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
-  },
-  {
-    value: "Orders",
-    elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
-  },
-  {
-    value: "eComm Revenue",
-    elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
-  },
-  {
-    value: "Conversion Rate",
-    elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
-  },
-  {
-    value: "Avg Order Value",
-    elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
-  }
-];
+var columns = [];
 
 const initialValues = {
   accept: false
 };
+
+var auth =
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NTk2ODY2MTEsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.KnpuCBRHA4GNcdkwULfV2ABUZpW9s3w5zs1aGlPcrX0";
 
 class ProductReport extends React.Component {
   state = {
@@ -192,9 +162,42 @@ class ProductReport extends React.Component {
     var productTestDataHeader = "";
     var productTestDataBody = "";
     const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NTk2MTQzNDYsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.FIl9tFUhTtB6hN2b-TU25pGBtva-BYVFD9u9IsadAFQ"
+      Authorization: auth
     };
+    columns = [
+      {
+        value: "Brand",
+        elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+      },
+      {
+        value: "Sessions",
+        elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+      },
+      {
+        value: "Users",
+        elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+      },
+      {
+        value: "Total Units",
+        elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+      },
+      {
+        value: "Orders",
+        elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+      },
+      {
+        value: "eComm Revenue",
+        elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+      },
+      {
+        value: "Conversion Rate",
+        elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+      },
+      {
+        value: "Avg Order Value",
+        elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+      }
+    ];
 
     //Default API call with no Second Dimension
     if (!this.state.dateRange) {
@@ -262,129 +265,244 @@ class ProductReport extends React.Component {
     );
   };
 
-  // dimensionHandler = async () => {
-  //   var dimensionValue = [...this.state.dimension];
-  //   var updatedDimensionValue;
-  //   var finalDimensionValue = [];
-  //   if (dimensionValue[0]) {
-  //     var updatedDimensionValue = await dimensionValue.map(dimension => {
-  //       if (dimension.value === "Device") {
-  //         //====  check if there is a specified date range
-  //         // if (this.state.datRange) {
-  //         //   var fromDate = this.state.startDate._d;
-  //         //   var toDate = this.state.endDate._d;
+  dimensionHandler = async () => {
+    if (this.state.dimension) {
+      var dimensionValue = [...this.state.dimension];
+      var productTestDataHeader = "";
+      var productTestDataBody = "";
+      const headers = {
+        Authorization: auth
+      };
 
-  //         //==== clean up the date data so that the API call can use it
-  //         //        const response = await axios.get(
-  //         //          "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel_and_day_of_week&sortOption=users&sortOrientation=Asc"
-  //         //         );
-  //         // } else {
+      if (dimensionValue[0].value === "Day of Week") {
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Day of Week",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        } else {
+          console.log("dimension Day of Week with a date range");
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_brand_and_day_of_week&sortOption=brand`,
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        }
+      } else if (dimensionValue[0].value === "Country/Region") {
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Country/Region",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_country_region&sortOption=brand",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        } else {
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_brand_and_country_region&sortOption=brand`,
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        }
+      } else if (dimensionValue[0].value === "Hour") {
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Hour of Day",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_hour_of_day&sortOption=brand",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        } else {
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_brand_and_hour_of_day&sortOption=brand`,
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        }
+      }
+    } else {
+      this.apiReportHandler();
+    }
+  };
 
-  //         //==== DEVICE normal Dimension API call
-  //         // const response = await axios.get(
-  //         //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel&sortOption=users&sortOrientation=Asc"
-  //         // );
-  //         return [
-  //           {
-  //             dimension: "Desktop",
-  //             name: "T-shirt Lannister Red",
-  //             users: "113,450",
-  //             sessions: "78,423",
-
-  //             orders: "12,581",
-  //             totalUnitsSold: "9,342",
-  //             averageOrderValue: "$19.99",
-  //             totalRevenue: "$86,746"
-  //           }
-  //         ];
-  //       } else if (dimension.value === "State") {
-  //         return [
-  //           {
-  //             dimension: "Florida",
-  //             name: "T-shirt Lannister Red",
-  //             users: "113,450",
-  //             sessions: "78,423",
-
-  //             orders: "12,581",
-  //             totalUnitsSold: "5,342",
-  //             averageOrderValue: "$19.99",
-  //             totalRevenue: "$76,746"
-  //           }
-  //         ];
-  //       } else if (dimension.value === "Hour") {
-  //         return [
-  //           {
-  //             dimension: "14:00",
-  //             name: "T-shirt Lannister Red",
-  //             users: "113,450",
-  //             sessions: "78,423",
-
-  //             orders: "12,581",
-  //             totalUnitsSold: "5,342",
-  //             averageOrderValue: "$19.99",
-  //             totalRevenue: "$76,746"
-  //           }
-  //         ];
-  //       } else if (dimension.value === "Day of Week") {
-  //         return [
-  //           {
-  //             dimension: "Wednesday",
-  //             name: "T-shirt Lannister Red",
-  //             users: "113,450",
-  //             sessions: "78,423",
-
-  //             orders: "12,581",
-  //             totalUnitsSold: "5,342",
-  //             averageOrderValue: "$19.99",
-  //             totalRevenue: "$76,746"
-  //           }
-  //         ];
-  //       }
-  //     });
-
-  //     finalDimensionValue = updatedDimensionValue[0];
-  //     console.log("=== final Dimension Final ===");
-  //     console.log(finalDimensionValue);
-
-  //     this.setState({
-  //       productTableData: finalDimensionValue
-  //     });
-  //   } else {
-  //     updatedDimensionValue = [
-  //       {
-  //         name: "T-shirt Stark Grey",
-  //         users: "313,450",
-  //         sessions: "278,423",
-
-  //         orders: "36,581",
-  //         totalUnitsSold: "19,342",
-  //         averageOrderValue: "$19.99",
-  //         totalRevenue: "$186,746"
-  //       },
-  //       {
-  //         name: "T-shirt Stark Grey",
-  //         users: "413,450",
-  //         sessions: "188,423",
-
-  //         orders: "24,581",
-  //         totalUnitsSold: "22,342",
-  //         averageOrderValue: "$19.99",
-  //         totalRevenue: "$146,746"
-  //       }
-  //     ];
-  //     console.log(updatedDimensionValue);
-  //     this.setState({
-  //       productTableData: updatedDimensionValue,
-  //       dateRange: false
-  //     });
-  //   }
-  // };
-
-  saveChanges = dimension => {
+  saveDimensionChanges = dimension => {
     var resetValue = dimension;
+    console.log("dimension state changing...");
+
     if (dimension.length > 1) {
       resetValue.shift();
     }
+
+    if (dimension.length < 1) {
+      resetValue = false;
+    }
+
     this.setState(
       {
         dimension: resetValue
@@ -488,7 +606,7 @@ class ProductReport extends React.Component {
                       name="form-field-name2"
                       value={this.state.dimension}
                       options={dimensionOptions}
-                      onChange={this.saveChanges}
+                      onChange={this.saveDimensionChanges}
                       multi
                       className="mb-4"
                     />
@@ -516,7 +634,7 @@ class ProductReport extends React.Component {
                   hasPagination
                   hasSort
                   originalSize={this.state.productTableDataBody.length}
-                  pageSize={5}
+                  pageSize={20}
                 >
                   {this.props.children}
                 </CustomTable>
