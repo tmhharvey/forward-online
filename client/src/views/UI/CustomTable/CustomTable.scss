@@ -1,0 +1,133 @@
+.custom-table {
+  .table-container {
+    overflow-x: scroll;
+  }
+
+  .table {
+    thead {
+      th {
+        color: #27667c;
+        padding-bottom: 8px;
+        padding-top: 8px;
+
+        > {
+          a,
+          .btn {
+            align-items: center;
+            color: blue;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+
+            [class*="icon__fa"] {
+              line-height: 40px;
+              padding-top: 2px;
+            }
+          }
+        }
+
+        > .btn {
+          .btn-default {
+            font-family: "Rubik-Regular" !important;
+            font-weight: 700;
+          }
+        }
+
+        .fas {
+          color: black;
+          height: 100%;
+          text-decoration: none;
+
+          &.fa-sort,
+          &.fa-info-circle {
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    .page-item.active .page-link {
+      background: grey;
+      border-color: grey;
+    }
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .pagination-buttons {
+      ul {
+        li {
+          &:first-child {
+            &.disabled {
+              opacity: 0.5;
+              a {
+                color: teal !important;
+              }
+            }
+          }
+          &:last-child {
+            &.disabled {
+              opacity: 0.5;
+
+              a {
+                color: teal !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    li {
+      a {
+        color: teal !important;
+      }
+    }
+
+    .page-number {
+      border-radius: 4px;
+      color: white;
+      display: inline-block;
+      height: 8px * 5;
+      line-height: 8px * 5;
+      padding: 0 8px * 2;
+    }
+
+    .page-size {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+
+      > .form-control {
+        margin: 0 8px;
+      }
+
+      .go-to-page {
+        margin: 0 8px;
+        text-align: center;
+        width: 8px * 6;
+
+        input {
+          height: 8px * 5;
+          padding: 10px;
+          text-align: center;
+        }
+      }
+
+      .selectMenuComponent {
+        padding-right: 8px * 3;
+      }
+    }
+
+    select.form-control {
+      width: auto;
+    }
+  }
+
+  .selectMenuComponent {
+    margin: 0 8px * 2 0 4px;
+  }
+}

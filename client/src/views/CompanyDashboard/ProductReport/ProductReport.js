@@ -29,16 +29,23 @@ import { Bar, Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
+import CustomTable from "../../UI/CustomTable/CustomTable";
 
 // React DateRangePicker
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+// import Moment from "react-moment";
+import moment from "moment";
 
 //Dimensions
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
 import tableOptions from "./data/dimensions";
+
+//Pagination
+// import ReactDOM from "react-dom";
+// import Pagination from "react-js-pagination";
 
 import axios from "axios";
 import * as Yup from "yup";
@@ -105,17 +112,56 @@ const options = {
   maintainAspectRatio: false
 };
 
+const columns = [
+  {
+    value: "Brand",
+    elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+  },
+  {
+    value: "Sessions",
+    elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+  },
+  {
+    value: "Users",
+    elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+  },
+  {
+    value: "Total Units",
+    elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+  },
+  {
+    value: "Orders",
+    elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+  },
+  {
+    value: "eComm Revenue",
+    elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+  },
+  {
+    value: "Conversion Rate",
+    elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+  },
+  {
+    value: "Avg Order Value",
+    elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+  }
+];
+
 const initialValues = {
   accept: false
 };
 
 class ProductReport extends React.Component {
   state = {
-    productTableData: [],
+    productTestDataHeader: [],
+    productTableDataBody: [],
+    fromDate: "",
+    toDate: "",
     dimension: [""],
     displayOptions: {
       users: true
     },
+    productReportData: columns,
     dateRange: false
   };
 
@@ -138,412 +184,201 @@ class ProductReport extends React.Component {
   //     }
   //   );
   // };
+  componentDidMount = () => {
+    this.apiReportHandler();
+  };
 
-  componentDidMount = async () => {
+  apiReportHandler = async () => {
+    var productTestDataHeader = "";
+    var productTestDataBody = "";
+    const headers = {
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NTk2MTQzNDYsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.FIl9tFUhTtB6hN2b-TU25pGBtva-BYVFD9u9IsadAFQ"
+    };
+
     //Default API call with no Second Dimension
-    // const response = await axios.get(
-    //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_product_sku&sortOption=users&sortOrientation=Asc"
-    // );
-
-    // clean the data
-    // const parsedResp = response.(whatever)
-
-    //set the state object based on the clean data and update state
-    // productTestData = [{parsedResp.name, parsedResp.trafficSource}]
     if (!this.state.dateRange) {
-      productTestData = [
-        {
-          name: "T-shirt Stark Grey",
-          trafficSource: "Source 1",
-          users: "313,450",
-          sessions: "278,423",
+      var apiResults = await axios.get(
+        "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
+        { headers }
+      );
 
-          orders: "36,581",
-          totalUnitsSold: "19,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$186,746"
+      console.log(apiResults.data.elasticResult.resultsTable.source);
+      var sourceData = apiResults.data.elasticResult.resultsTable.source;
+      productTestDataHeader = sourceData.columns;
+      productTestDataBody = sourceData.rows;
+
+      this.setState(
+        {
+          productTestDataHeader: productTestDataHeader,
+          productTableDataBody: productTestDataBody
         },
+        () => {}
+      );
+    } else {
+      var apiResults = await axios.get(
+        `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+          this.state.fromDate
+        }&toDate=${
+          this.state.toDate
+        }&permutation=group_by_brand&sortOption=brand`,
+        { headers }
+      );
+
+      console.log(apiResults.data.elasticResult.resultsTable.source);
+      var sourceData = apiResults.data.elasticResult.resultsTable.source;
+      productTestDataHeader = sourceData.columns;
+      productTestDataBody = sourceData.rows;
+
+      this.setState(
         {
-          name: "T-shirt Lannister Red",
-          trafficSource: "Source 2",
-          users: "413,450",
-          sessions: "188,423",
-
-          orders: "24,581",
-          totalUnitsSold: "22,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$146,746"
-        }
-      ];
-
-      this.setState({
-        productTableData: productTestData
-      });
+          productTestDataHeader: productTestDataHeader,
+          productTableDataBody: productTestDataBody
+        },
+        () => {}
+      );
     }
   };
 
   dateChangeHandler = async e => {
     e.preventDefault();
 
-    var fromDate = this.state.startDate._d;
-    var toDate = this.state.endDate._d;
+    var fromDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
+    var toDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
 
-    // clean the fromDate and toDate for the API call
-    //  <code block>
+    console.log(fromDate);
+    console.log(toDate);
 
-    //Date range API Call
-    // const response = await axios.get(
-    //  `api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&fromDate=${fromDate}&toDate=${toDate}&permutation=group_by_product_sku&sortOption=users&sortOrientation=Asc`
-    // );
-
-    // clean the data
-    // const parsedResp = response.(whatever)
-
-    //set the state object based on the clean data and update state
-    // productTestData = [{parsedResp.name, parsedResp.trafficSource}]
-    productTestData = [
+    this.setState(
       {
-        date: "May 21, 2019",
-        name: "T-shirt Stark Grey",
-        users: "313,450",
-        sessions: "278,423",
-        orders: "36,581",
-        totalUnitsSold: "19,342",
-        averageOrderValue: "$19.99",
-        totalRevenue: "$186,746"
+        fromDate: fromDate,
+        toDate: toDate,
+        dateRange: true
       },
-      {
-        date: "May 21, 2019",
-        name: "T-shirt Lannister Red",
-        users: "413,450",
-        sessions: "188,423",
-
-        orders: "24,581",
-        totalUnitsSold: "22,342",
-        averageOrderValue: "$19.99",
-        totalRevenue: "$146,746"
+      () => {
+        this.apiReportHandler();
+        console.log(this.state);
       }
-    ];
-
-    this.setState({
-      productTableData: productTestData,
-      dateRange: true
-    });
+    );
   };
 
-  dimensionHandler = async () => {
-    var dimensionValue = [...this.state.dimension];
-    var updatedDimensionValue;
-    var finalDimensionValue = [];
-    if (dimensionValue[0]) {
-      var updatedDimensionValue = await dimensionValue.map(dimension => {
-        if (dimension.value === "Device") {
-          //====  check if there is a specified date range
-          // if (this.state.datRange) {
-          //   var fromDate = this.state.startDate._d;
-          //   var toDate = this.state.endDate._d;
+  // dimensionHandler = async () => {
+  //   var dimensionValue = [...this.state.dimension];
+  //   var updatedDimensionValue;
+  //   var finalDimensionValue = [];
+  //   if (dimensionValue[0]) {
+  //     var updatedDimensionValue = await dimensionValue.map(dimension => {
+  //       if (dimension.value === "Device") {
+  //         //====  check if there is a specified date range
+  //         // if (this.state.datRange) {
+  //         //   var fromDate = this.state.startDate._d;
+  //         //   var toDate = this.state.endDate._d;
 
-          //==== clean up the date data so that the API call can use it
-          //        const response = await axios.get(
-          //          "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel_and_day_of_week&sortOption=users&sortOrientation=Asc"
-          //         );
-          // } else {
+  //         //==== clean up the date data so that the API call can use it
+  //         //        const response = await axios.get(
+  //         //          "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel_and_day_of_week&sortOption=users&sortOrientation=Asc"
+  //         //         );
+  //         // } else {
 
-          //==== DEVICE normal Dimension API call
-          // const response = await axios.get(
-          //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel&sortOption=users&sortOrientation=Asc"
-          // );
-          return [
-            {
-              dimension: "Smart Phone",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
+  //         //==== DEVICE normal Dimension API call
+  //         // const response = await axios.get(
+  //         //  "api/reporting/v0.1/ProductPerformanceReport/GetReportResults?aggregationFormat=Flattened&permutation=group_by_channel&sortOption=users&sortOrientation=Asc"
+  //         // );
+  //         return [
+  //           {
+  //             dimension: "Desktop",
+  //             name: "T-shirt Lannister Red",
+  //             users: "113,450",
+  //             sessions: "78,423",
 
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Tablet",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
+  //             orders: "12,581",
+  //             totalUnitsSold: "9,342",
+  //             averageOrderValue: "$19.99",
+  //             totalRevenue: "$86,746"
+  //           }
+  //         ];
+  //       } else if (dimension.value === "State") {
+  //         return [
+  //           {
+  //             dimension: "Florida",
+  //             name: "T-shirt Lannister Red",
+  //             users: "113,450",
+  //             sessions: "78,423",
 
-              orders: "12,581",
-              totalUnitsSold: "2,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$36,746"
-            },
-            {
-              dimension: "Desktop",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
+  //             orders: "12,581",
+  //             totalUnitsSold: "5,342",
+  //             averageOrderValue: "$19.99",
+  //             totalRevenue: "$76,746"
+  //           }
+  //         ];
+  //       } else if (dimension.value === "Hour") {
+  //         return [
+  //           {
+  //             dimension: "14:00",
+  //             name: "T-shirt Lannister Red",
+  //             users: "113,450",
+  //             sessions: "78,423",
 
-              totalUnitsSold: "6,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$86,746"
-            },
-            {
-              dimension: "Smart Phone",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
+  //             orders: "12,581",
+  //             totalUnitsSold: "5,342",
+  //             averageOrderValue: "$19.99",
+  //             totalRevenue: "$76,746"
+  //           }
+  //         ];
+  //       } else if (dimension.value === "Day of Week") {
+  //         return [
+  //           {
+  //             dimension: "Wednesday",
+  //             name: "T-shirt Lannister Red",
+  //             users: "113,450",
+  //             sessions: "78,423",
 
-              orders: "5,581",
-              totalUnitsSold: "8,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$42,746"
-            },
-            {
-              dimension: "Tablet",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
+  //             orders: "12,581",
+  //             totalUnitsSold: "5,342",
+  //             averageOrderValue: "$19.99",
+  //             totalRevenue: "$76,746"
+  //           }
+  //         ];
+  //       }
+  //     });
 
-              orders: "4,581",
-              totalUnitsSold: "7,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$58,746"
-            },
-            {
-              dimension: "Desktop",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
+  //     finalDimensionValue = updatedDimensionValue[0];
+  //     console.log("=== final Dimension Final ===");
+  //     console.log(finalDimensionValue);
 
-              orders: "12,581",
-              totalUnitsSold: "9,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$86,746"
-            }
-          ];
-        } else if (dimension.value === "State") {
-          return [
-            {
-              dimension: "Colorado",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
+  //     this.setState({
+  //       productTableData: finalDimensionValue
+  //     });
+  //   } else {
+  //     updatedDimensionValue = [
+  //       {
+  //         name: "T-shirt Stark Grey",
+  //         users: "313,450",
+  //         sessions: "278,423",
 
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Florida",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
+  //         orders: "36,581",
+  //         totalUnitsSold: "19,342",
+  //         averageOrderValue: "$19.99",
+  //         totalRevenue: "$186,746"
+  //       },
+  //       {
+  //         name: "T-shirt Stark Grey",
+  //         users: "413,450",
+  //         sessions: "188,423",
 
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Colorado",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Florida",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            }
-          ];
-        } else if (dimension.value === "Hour") {
-          return [
-            {
-              dimension: "12:00",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "13:00",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "14:00",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "12:00",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "13:00",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "14:00",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            }
-          ];
-        } else if (dimension.value === "Day of Week") {
-          return [
-            {
-              dimension: "Monday",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Tuesday",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Wednesday",
-              name: "T-shirt Stark Grey",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Monday",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Tuesday",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            },
-            {
-              dimension: "Wednesday",
-              name: "T-shirt Lannister Red",
-              users: "113,450",
-              sessions: "78,423",
-
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
-            }
-          ];
-        }
-      });
-
-      finalDimensionValue = updatedDimensionValue[0];
-      console.log("=== final Dimension Final ===");
-      console.log(finalDimensionValue);
-
-      this.setState({
-        productTableData: finalDimensionValue
-      });
-    } else {
-      updatedDimensionValue = [
-        {
-          name: "T-shirt Stark Grey",
-          users: "313,450",
-          sessions: "278,423",
-
-          orders: "36,581",
-          totalUnitsSold: "19,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$186,746"
-        },
-        {
-          name: "T-shirt Stark Grey",
-          users: "413,450",
-          sessions: "188,423",
-
-          orders: "24,581",
-          totalUnitsSold: "22,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$146,746"
-        }
-      ];
-      console.log(updatedDimensionValue);
-      this.setState({
-        productTableData: updatedDimensionValue
-      });
-    }
-  };
+  //         orders: "24,581",
+  //         totalUnitsSold: "22,342",
+  //         averageOrderValue: "$19.99",
+  //         totalRevenue: "$146,746"
+  //       }
+  //     ];
+  //     console.log(updatedDimensionValue);
+  //     this.setState({
+  //       productTableData: updatedDimensionValue,
+  //       dateRange: false
+  //     });
+  //   }
+  // };
 
   saveChanges = dimension => {
     var resetValue = dimension;
@@ -555,8 +390,6 @@ class ProductReport extends React.Component {
         dimension: resetValue
       },
       () => {
-        console.log("==== Should be 1 value ====");
-        console.log(this.state.dimension);
         this.dimensionHandler();
       }
     );
@@ -564,24 +397,22 @@ class ProductReport extends React.Component {
 
   falseFunc = () => false;
   render() {
-    var renderedReportTable = "";
-    var productData = this.state.productTableData;
-    renderedReportTable = productData.map(product => {
-      return (
-        <tr>
-          {this.state.dimension[0] ? <td>{product.dimension}</td> : null}
-          {this.state.dateRange ? <td>{product.date}</td> : null}
-          <td>{product.name}</td>
-          <td>{product.users}</td>
-          <td>{product.sessions}</td>
-          <td>{product.orders}</td>
-          <td>{product.totalUnitsSold}</td>
-          <td>{product.averageOrderValue}</td>
-          <td>
-            <strong className="text-success">{product.totalRevenue}</strong>
-          </td>
-        </tr>
-      );
+    var renderedReportTableHeader = "";
+    var renderedReportTableBody = "";
+    var productDataHeader = this.state.productTestDataHeader;
+    var productData = this.state.productTableDataBody;
+
+    renderedReportTableHeader = productDataHeader.map(header => {
+      return <th>{header.name}</th>;
+    });
+
+    renderedReportTableBody = productData.map(product => {
+      var productArray = product;
+      var productRows = productArray.map(data => {
+        return <td>{data}</td>;
+      });
+
+      return <tr>{productRows}</tr>;
     });
 
     return (
@@ -679,47 +510,16 @@ class ProductReport extends React.Component {
                     </FormGroup>
                   </Col> */}
                 </Row>
-
-                <Table responsive striped>
-                  <thead>
-                    <tr>
-                      {this.state.dimension[0] ? <th>Dimension</th> : null}
-                      {this.state.dateRange ? <th>Date</th> : null}
-                      <th>Name</th>
-                      <th>Users</th>
-                      <th>Sessions</th>
-                      <th>Orders</th>
-                      <th>Total Units Sold</th>
-                      <th>Average Order Value</th>
-                      <th>Total Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>{renderedReportTable}</tbody>
-                </Table>
-                <Pagination>
-                  <PaginationItem disabled>
-                    <PaginationLink previous tag="button">
-                      Prev
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink tag="button">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next tag="button">
-                      Next
-                    </PaginationLink>
-                  </PaginationItem>
-                </Pagination>
+                <CustomTable
+                  tableData={this.state.productTableDataBody}
+                  columns={columns}
+                  hasPagination
+                  hasSort
+                  originalSize={this.state.productTableDataBody.length}
+                  pageSize={5}
+                >
+                  {this.props.children}
+                </CustomTable>
               </CardBody>
             </Card>
           </Col>
@@ -727,6 +527,7 @@ class ProductReport extends React.Component {
       </div>
     );
   }
+  i;
 }
 
 export default ProductReport;
