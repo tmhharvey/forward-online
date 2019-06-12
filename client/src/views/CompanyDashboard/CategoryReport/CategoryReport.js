@@ -56,7 +56,20 @@ const displayOptions = tableOptions.displayOptions;
 var productTestData = [];
 
 const line = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
+  labels: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
   datasets: [
     {
       label: "Sessions",
@@ -77,10 +90,23 @@ const line = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
+      data: [
+        6500,
+        5900,
+        8000,
+        8100,
+        5600,
+        5500,
+        4000,
+        4400,
+        4800,
+        5600,
+        6100,
+        6200
+      ]
     },
     {
-      label: "Transactions",
+      label: "Total Orders",
       fill: false,
       lineTension: 0.1,
       backgroundColor: "rgb(77,189,116, 0.4)",
@@ -98,7 +124,20 @@ const line = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [35, 42, 64, 67, 21, 55, 48]
+      data: [
+        3500,
+        4200,
+        6400,
+        6700,
+        2100,
+        5500,
+        4800,
+        4600,
+        4200,
+        4100,
+        3500,
+        3100
+      ]
     }
   ]
 };
@@ -119,7 +158,7 @@ const initialValues = {
 };
 
 var auth =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NTk2ODM5OTUsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.ocqDXSVPcv5D7MW2Q0_Vqs4GNRnFVm1kuOuRcUhAye4";
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NjAxOTc3MjAsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.UFGvjdFGTahET6DN4D9VvCaVsYKPaFWiHfW0Gs_uEig";
 
 class CategoryReport extends React.Component {
   state = {
@@ -131,7 +170,7 @@ class CategoryReport extends React.Component {
     displayOptions: {
       users: true
     },
-    productReportData: columns,
+    CategoryReportData: columns,
     dateRange: false
   };
 
@@ -154,100 +193,111 @@ class CategoryReport extends React.Component {
   //     }
   //   );
   // };
-  // componentDidMount = () => {
-  //   this.apiReportHandler();
-  // };
+  componentDidMount = () => {
+    this.apiReportHandler();
+  };
 
-  // apiReportHandler = async () => {
-  //   var productTestDataHeader = "";
-  //   var productTestDataBody = "";
-  //   const headers = {
-  //     Authorization: auth
-  //   };
-  //   columns = [
-  //     {
-  //       value: "Brand",
-  //       elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-  //     },
-  //     {
-  //       value: "Sessions",
-  //       elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
-  //     },
-  //     {
-  //       value: "Users",
-  //       elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
-  //     },
-  //     {
-  //       value: "Total Units",
-  //       elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
-  //     },
-  //     {
-  //       value: "Orders",
-  //       elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
-  //     },
-  //     {
-  //       value: "eComm Revenue",
-  //       elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
-  //     },
-  //     {
-  //       value: "Conversion Rate",
-  //       elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
-  //     },
-  //     {
-  //       value: "Avg Order Value",
-  //       elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
-  //     }
-  //   ];
+  lineChartHandler = (fromDate, toDate, timeCycle) => {
+    //get the dates and parse them into an array grouped by the selected time-period.
+    // get the data for sessions and orders for those months
+    // aggregate the sessions and orders data by the time-period in which they were in
+    //render a graph with the appropriate data
+  };
 
-  //   //Default API call with no Second Dimension
-  //   if (!this.state.dateRange) {
-  //     var apiResults = await axios.get(
-  //       "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
-  //       { headers }
-  //     );
+  apiReportHandler = async () => {
+    var productTestDataHeader = "";
+    var productTestDataBody = "";
+    const headers = {
+      Authorization: auth
+    };
+    columns = [
+      {
+        value: "Brand",
+        elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+      },
+      {
+        value: "Sessions",
+        elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+      },
+      {
+        value: "Users",
+        elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+      },
+      {
+        value: "Total Units",
+        elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+      },
+      {
+        value: "Orders",
+        elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+      },
+      {
+        value: "eComm Revenue",
+        elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+      },
+      {
+        value: "Conversion Rate",
+        elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+      },
+      {
+        value: "Avg Order Value",
+        elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+      }
+    ];
 
-  //     console.log(apiResults.data.elasticResult.resultsTable.source);
-  //     var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //     productTestDataHeader = sourceData.columns;
-  //     productTestDataBody = sourceData.rows;
+    console.log("API report fired----");
+    //Default API call with no Second Dimension
+    // if (!this.state.dateRange) {
+    //   var apiResults = await axios.get(
+    //     "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
+    //     { headers }
+    //   );
 
-  //     this.setState(
-  //       {
-  //         productTestDataHeader: productTestDataHeader,
-  //         productTableDataBody: productTestDataBody
-  //       },
-  //       () => {}
-  //     );
-  //   } else {
-  //     var apiResults = await axios.get(
-  //       `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-  //         this.state.fromDate
-  //       }&toDate=${
-  //         this.state.toDate
-  //       }&permutation=group_by_brand&sortOption=brand`,
-  //       { headers }
-  //     );
+    // if (apiResults.data.hasResults) {
+    //   console.log("API Results Data");
+    //   console.log(apiResults);
+    //   var sourceData = apiResults.data.elasticResult.resultsTable.source;
 
-  //     console.log(apiResults.data.elasticResult.resultsTable.source);
-  //     var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //     productTestDataHeader = sourceData.columns;
-  //     productTestDataBody = sourceData.rows;
+    //   productTestDataHeader = sourceData.columns;
+    //   productTestDataBody = sourceData.rows;
 
-  //     this.setState(
-  //       {
-  //         productTestDataHeader: productTestDataHeader,
-  //         productTableDataBody: productTestDataBody
-  //       },
-  //       () => {}
-  //     );
-  //   }
-  // };
+    //   this.setState({
+    //     productTestDataHeader: productTestDataHeader,
+    //     productTableDataBody: productTestDataBody
+    //   });
+    // } else {
+    //   console.log("The API came back with No Results");
+    // }
+    // } else {
+    //   var apiResults = await axios.get(
+    //     `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+    //       this.state.fromDate
+    //     }&toDate=${
+    //       this.state.toDate
+    //     }&permutation=group_by_brand&sortOption=brand`,
+    //     { headers }
+    //   );
+
+    //   console.log(apiResults.data.elasticResult.resultsTable.source);
+    //   var sourceData = apiResults.data.elasticResult.resultsTable.source;
+    //   productTestDataHeader = sourceData.columns;
+    //   productTestDataBody = sourceData.rows;
+
+    //   this.setState(
+    //     {
+    //       productTestDataHeader: productTestDataHeader,
+    //       productTableDataBody: productTestDataBody
+    //     },
+    //     () => {}
+    //   );
+    // }
+  };
 
   dateChangeHandler = async e => {
     e.preventDefault();
 
     var fromDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
-    var toDate = moment(this.state.endDate._d, "MM/DD/YYYY").format("L");
+    var toDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
 
     console.log(fromDate);
     console.log(toDate);
@@ -259,259 +309,265 @@ class CategoryReport extends React.Component {
         dateRange: true
       },
       () => {
-        // this.apiReportHandler();
+        this.apiReportHandler();
         console.log(this.state);
       }
     );
   };
 
-  // dimensionHandler = async () => {
-  //   if (this.state.dimension) {
-  //     var dimensionValue = [...this.state.dimension];
-  //     var productTestDataHeader = "";
-  //     var productTestDataBody = "";
-  //     const headers = {
-  //       Authorization: auth
-  //     };
+  dimensionHandler = async () => {
+    if (this.state.dimension) {
+      var dimensionValue = [...this.state.dimension];
+      var productTestDataHeader = "";
+      var productTestDataBody = "";
+      const headers = {
+        Authorization: auth
+      };
 
-  //     if (dimensionValue[0].value === "Day of Week") {
-  //       columns = [
-  //         {
-  //           value: "Brand",
-  //           elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-  //         },
-  //         {
-  //           value: "Day of Week",
-  //           elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
-  //         },
-  //         {
-  //           value: "Sessions",
-  //           elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
-  //         },
-  //         {
-  //           value: "Users",
-  //           elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
-  //         },
-  //         {
-  //           value: "Total Units",
-  //           elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
-  //         },
-  //         {
-  //           value: "Orders",
-  //           elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
-  //         },
-  //         {
-  //           value: "eComm Revenue",
-  //           elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
-  //         },
-  //         {
-  //           value: "Conversion Rate",
-  //           elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
-  //         },
-  //         {
-  //           value: "Avg Order Value",
-  //           elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
-  //         }
-  //       ];
-  //       if (!this.state.dateRange) {
-  //         var apiResults = await axios.get(
-  //           "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       } else {
-  //         console.log("dimension Day of Week with a date range");
-  //         var apiResults = await axios.get(
-  //           `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-  //             this.state.fromDate
-  //           }&toDate=${
-  //             this.state.toDate
-  //           }&permutation=group_by_brand_and_day_of_week&sortOption=brand`,
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       }
-  //     } else if (dimensionValue[0].value === "Country/Region") {
-  //       columns = [
-  //         {
-  //           value: "Brand",
-  //           elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-  //         },
-  //         {
-  //           value: "Country/Region",
-  //           elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
-  //         },
-  //         {
-  //           value: "Sessions",
-  //           elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
-  //         },
-  //         {
-  //           value: "Users",
-  //           elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
-  //         },
-  //         {
-  //           value: "Total Units",
-  //           elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
-  //         },
-  //         {
-  //           value: "Orders",
-  //           elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
-  //         },
-  //         {
-  //           value: "eComm Revenue",
-  //           elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
-  //         },
-  //         {
-  //           value: "Conversion Rate",
-  //           elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
-  //         },
-  //         {
-  //           value: "Avg Order Value",
-  //           elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
-  //         }
-  //       ];
-  //       if (!this.state.dateRange) {
-  //         var apiResults = await axios.get(
-  //           "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_country_region&sortOption=brand",
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       } else {
-  //         var apiResults = await axios.get(
-  //           `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-  //             this.state.fromDate
-  //           }&toDate=${
-  //             this.state.toDate
-  //           }&permutation=group_by_brand_and_country_region&sortOption=brand`,
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       }
-  //     } else if (dimensionValue[0].value === "Hour") {
-  //       columns = [
-  //         {
-  //           value: "Brand",
-  //           elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-  //         },
-  //         {
-  //           value: "Hour of Day",
-  //           elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
-  //         },
-  //         {
-  //           value: "Sessions",
-  //           elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
-  //         },
-  //         {
-  //           value: "Users",
-  //           elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
-  //         },
-  //         {
-  //           value: "Total Units",
-  //           elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
-  //         },
-  //         {
-  //           value: "Orders",
-  //           elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
-  //         },
-  //         {
-  //           value: "eComm Revenue",
-  //           elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
-  //         },
-  //         {
-  //           value: "Conversion Rate",
-  //           elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
-  //         },
-  //         {
-  //           value: "Avg Order Value",
-  //           elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
-  //         }
-  //       ];
-  //       if (!this.state.dateRange) {
-  //         var apiResults = await axios.get(
-  //           "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_hour_of_day&sortOption=brand",
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       } else {
-  //         var apiResults = await axios.get(
-  //           `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-  //             this.state.fromDate
-  //           }&toDate=${
-  //             this.state.toDate
-  //           }&permutation=group_by_brand_and_hour_of_day&sortOption=brand`,
-  //           { headers }
-  //         );
-  //         console.log(apiResults.data.elasticResult.resultsTable.source);
-  //         var sourceData = apiResults.data.elasticResult.resultsTable.source;
-  //         productTestDataHeader = sourceData.columns;
-  //         productTestDataBody = sourceData.rows;
-  //         this.setState({
-  //           productTestDataHeader: productTestDataHeader,
-  //           productTableDataBody: productTestDataBody
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     this.apiReportHandler();
-  //   }
-  // };
+      if (dimensionValue[0].value === "Day of Week") {
+        console.log("Day of week dimension change fired");
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Day of Week",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          console.log("Day of week dimension change fired WITHOUT a DATE");
+          // var apiResults = await axios.get(
+          //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
+          //   { headers }
+          // );
+          // console.log(apiResults.data.elasticResult.resultsTable.source);
+          // var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          // productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader
+            // productTableDataBody: productTestDataBody
+          });
+        } else {
+          console.log("dimension Day of Week with a date range");
+          // var apiResults = await axios.get(
+          //   `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+          //     this.state.fromDate
+          //   }&toDate=${
+          //     this.state.toDate
+          //   }&permutation=group_by_brand_and_day_of_week&sortOption=brand`,
+          //   { headers }
+          // );
+          // console.log(apiResults.data.elasticResult.resultsTable.source);
+          // var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          // productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader
+            // productTableDataBody: productTestDataBody
+          });
+        }
+      } else if (dimensionValue[0].value === "Country/Region") {
+        console.log("API DIMENSION Country/Region report fired----");
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Country/Region",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        // if (!this.state.dateRange) {
+        //   var apiResults = await axios.get(
+        //     "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_country_region&sortOption=brand",
+        //     { headers }
+        //   );
+        //   console.log(apiResults.data.elasticResult.resultsTable.source);
+        //   var sourceData = apiResults.data.elasticResult.resultsTable.source;
+        //   productTestDataHeader = sourceData.columns;
+        //   productTestDataBody = sourceData.rows;
+        //   this.setState({
+        //     productTestDataHeader: productTestDataHeader,
+        //     productTableDataBody: productTestDataBody
+        //   });
+        // } else {
+        //   var apiResults = await axios.get(
+        //     `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+        //       this.state.fromDate
+        //     }&toDate=${
+        //       this.state.toDate
+        //     }&permutation=group_by_brand_and_country_region&sortOption=brand`,
+        //     { headers }
+        //   );
+        //   console.log(apiResults.data.elasticResult.resultsTable.source);
+        //   var sourceData = apiResults.data.elasticResult.resultsTable.source;
+        productTestDataHeader = columns;
+        //   productTestDataBody = sourceData.rows;
+        this.setState({
+          productTestDataHeader: productTestDataHeader
+          // productTableDataBody: productTestDataBody
+        });
+        // }
+      } else if (dimensionValue[0].value === "Hour") {
+        console.log("HOUR dimension change fired");
+        columns = [
+          {
+            value: "Brand",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Hour of Day",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eComm Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          console.log("HOUR dimension change fired WITHOUT a date");
+          // var apiResults = await axios.get(
+          //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_hour_of_day&sortOption=brand",
+          //   { headers }
+          // );
+          // console.log(apiResults.data.elasticResult.resultsTable.source);
+          // var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          // productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader
+            // productTableDataBody: productTestDataBody
+          });
+        } else {
+          console.log("HOUR dimension change fired WITH a date");
+          // var apiResults = await axios.get(
+          //   `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+          //     this.state.fromDate
+          //   }&toDate=${
+          //     this.state.toDate
+          //   }&permutation=group_by_brand_and_hour_of_day&sortOption=brand`,
+          //   { headers }
+          // );
+          // console.log(apiResults.data.elasticResult.resultsTable.source);
+          // var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          // productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader
+            // productTableDataBody: productTestDataBody
+          });
+        }
+      }
+    } else {
+      this.apiReportHandler();
+    }
+  };
 
-  // saveDimensionChanges = dimension => {
-  //   var resetValue = dimension;
-  //   console.log("dimension state changing...");
+  saveDimensionChanges = dimension => {
+    var resetValue = dimension;
+    console.log("dimension state changing...");
 
-  //   if (dimension.length > 1) {
-  //     resetValue.shift();
-  //   }
+    if (dimension.length > 1) {
+      resetValue.shift();
+    }
 
-  //   if (dimension.length < 1) {
-  //     resetValue = false;
-  //   }
+    if (dimension.length < 1) {
+      resetValue = false;
+    }
 
-  //   this.setState(
-  //     {
-  //       dimension: resetValue
-  //     },
-  //     () => {
-  //       this.dimensionHandler();
-  //     }
-  //   );
-  // };
+    this.setState(
+      {
+        dimension: resetValue
+      },
+      () => {
+        this.dimensionHandler();
+      }
+    );
+  };
 
   falseFunc = () => false;
   render() {
@@ -545,17 +601,17 @@ class CategoryReport extends React.Component {
               </CardHeader> */}
               <CardBody>
                 <DateRangePicker
-                  startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-                  startDateId="startDate" // PropTypes.string.isRequired,
-                  endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-                  endDateId="endDate" // PropTypes.string.isRequired,
+                  startDate={this.state.startDate}
+                  startDateId="startDate"
+                  endDate={this.state.endDate}
+                  endDateId="endDate"
                   onDatesChange={({ startDate, endDate }) =>
                     this.setState({ startDate, endDate })
-                  } // PropTypes.func.isRequired,
-                  focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                  }
+                  focusedInput={this.state.focusedInput}
                   onFocusChange={focusedInput =>
                     this.setState({ focusedInput })
-                  } // PropTypes.func.isRequired,
+                  }
                   orientation={this.state.orientation}
                   openDirection={this.state.openDirection}
                   isOutsideRange={this.falseFunc}
@@ -628,7 +684,7 @@ class CategoryReport extends React.Component {
                     </FormGroup>
                   </Col> */}
                 </Row>
-                {/* <CustomTable
+                <CustomTable
                   tableData={this.state.productTableDataBody}
                   columns={columns}
                   hasPagination
@@ -637,7 +693,7 @@ class CategoryReport extends React.Component {
                   pageSize={20}
                 >
                   {this.props.children}
-                </CustomTable> */}
+                </CustomTable>
               </CardBody>
             </Card>
           </Col>

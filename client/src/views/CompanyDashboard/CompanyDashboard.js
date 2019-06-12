@@ -32,7 +32,24 @@ import * as Yup from "yup";
 import "./CompanyDashboard.scss";
 import Widget04 from "../UI/Widgets/Widget04";
 import GoogleMaps from "../UI/GoogleMaps/GoogleMaps";
+import axios from "axios";
+
+import CustomTable from "../UI/CustomTable/CustomTable";
+
+// React DateRangePicker
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
+// import Moment from "react-moment";
+import moment from "moment";
+
+//Dimensions
+import Select from "react-select";
+import "react-select/dist/react-select.min.css";
+import tableOptions from "./dashboardData/dimensions";
+
 const Widget03 = lazy(() => import("../UI/Widgets/Widget03"));
+const dimensionOptions = tableOptions.dimensions;
 
 // Card Chart 1
 const cardChartData1 = {
@@ -230,10 +247,227 @@ const cardChartOpts4 = {
   }
 };
 
+var auth =
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NjAzNzkxNzEsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.R8qJtu9KdVBE83wUXtNw2TT7DCEYfUk3CuwzwC04qZo";
+
+var columns = [];
+
 class CompanyDashboard extends React.Component {
+  state = {
+    productTestDataHeader: [],
+    productTableDataBody: [],
+    fromDate: "",
+    toDate: "",
+    dimension: [""],
+    displayOptions: {
+      users: true
+    },
+    productReportData: "", //columns
+    dateRange: false,
+    totalSessions: null,
+    totalUnique: null,
+    totalOrders: null,
+    totalSales: null
+  };
+
+  componentDidMount = () => {
+    this.apiReportHandler();
+  };
+
+  apiReportHandler = async () => {
+    var productTestDataHeader = "";
+    var productTestDataBody = "";
+    const headers = {
+      Authorization: auth
+    };
+    columns = [
+      {
+        value: "Brand",
+        elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+      },
+      {
+        value: "Sessions",
+        elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+      },
+      {
+        value: "Users",
+        elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+      },
+      {
+        value: "Total Units",
+        elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+      },
+      {
+        value: "Orders",
+        elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+      },
+      {
+        value: "eComm Revenue",
+        elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+      },
+      {
+        value: "Conversion Rate",
+        elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+      },
+      {
+        value: "Avg Order Value",
+        elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+      }
+    ];
+
+    console.log("API report fired----");
+    // Default API call with no Second Dimension
+    if (!this.state.dateRange) {
+      console.log("no date range API call firing");
+      var apiResults = await axios.get(
+        "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
+        { headers }
+      );
+
+      // var countryBreakdownResults = await axios.get(
+      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions",
+      //   { headers }
+      // );
+
+      if (apiResults.data.hasResults) {
+        console.log("API Results Data");
+        console.log(apiResults);
+        var sourceData = apiResults.data.elasticResult.resultsTable.source;
+
+        productTestDataHeader = sourceData.columns;
+        productTestDataBody = sourceData.rows;
+
+        this.setState(
+          {
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          },
+          () => {
+            this.aggregateHandler(productTestDataBody);
+          }
+        );
+      } else {
+        console.log("The API came back with No Results");
+      }
+
+      // if (countryBreakdownResults.data.hasResults) {
+      //   console.log("Country Results Data");
+      //   console.log(countryBreakdownResults);
+      //   var sourceData = apiResults.data.elasticResult.resultsTable.source;
+      // } else {
+      //   console.log("The API came back with No Results");
+      // }
+    } else {
+      console.log("date range indentified...");
+      var apiResults = await axios.get(
+        `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+          this.state.fromDate
+        }&toDate=${
+          this.state.toDate
+        }&permutation=group_by_brand&sortOption=brand`,
+        { headers }
+      );
+
+      console.log(apiResults.data.elasticResult.resultsTable.source);
+      var sourceData = apiResults.data.elasticResult.resultsTable.source;
+      productTestDataHeader = sourceData.columns;
+      productTestDataBody = sourceData.rows;
+
+      this.setState(
+        {
+          productTestDataHeader: productTestDataHeader,
+          productTableDataBody: productTestDataBody
+        },
+        () => {
+          this.aggregateHandler(productTestDataBody);
+        }
+      );
+    }
+  };
+
+  aggregateHandler = async aggregateData => {
+    var totaledSessionData = 0;
+    var totaledUnique = 0;
+    var totaledOrders = 0;
+    var totaledSales = 0;
+
+    var dataMap = await aggregateData.map(data => {
+      totaledSessionData = totaledSessionData + data[1];
+      totaledUnique = totaledUnique + data[2];
+      totaledOrders = totaledOrders + data[4];
+      totaledSales = totaledSales + data[5];
+    });
+    this.setState({
+      totalSessions: totaledSessionData,
+      totalUnique: totaledUnique,
+      totalOrders: totaledOrders,
+      totalSales: totaledSales.toFixed(2)
+    });
+  };
+
+  dateChangeHandler = async e => {
+    e.preventDefault();
+
+    var fromDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
+    var toDate = moment(this.state.endDate._d, "MM/DD/YYYY").format("L");
+
+    console.log(fromDate);
+    console.log(toDate);
+
+    this.setState(
+      {
+        fromDate: fromDate,
+        toDate: toDate,
+        dateRange: true
+      },
+      () => {
+        this.apiReportHandler();
+        console.log(this.state);
+      }
+    );
+  };
+
+  falseFunc = () => false;
   render() {
     return (
       <div>
+        <Row>
+          <Col lg="5">
+            <Card>
+              {/* <CardHeader>
+                <i className="icon-calendar" />
+                <strong>Report Date Range</strong>{" "}
+                <div className="card-header-actions" />
+              </CardHeader> */}
+              <CardBody>
+                <DateRangePicker
+                  startDate={this.state.startDate}
+                  startDateId="startDate"
+                  endDate={this.state.endDate}
+                  endDateId="endDate"
+                  onDatesChange={({ startDate, endDate }) =>
+                    this.setState({ startDate, endDate })
+                  }
+                  focusedInput={this.state.focusedInput}
+                  onFocusChange={focusedInput =>
+                    this.setState({ focusedInput })
+                  }
+                  orientation={this.state.orientation}
+                  openDirection={this.state.openDirection}
+                  isOutsideRange={this.falseFunc}
+                />
+                <Button
+                  type="button"
+                  color="success"
+                  className="ml-4 mt-1"
+                  onClick={e => this.dateChangeHandler(e)}
+                >
+                  Update
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-primary">
@@ -241,8 +475,11 @@ class CompanyDashboard extends React.Component {
                 <ButtonGroup className="float-right">
                   <i className="icon-people fa-2x" />
                 </ButtonGroup>
-                <div className="text-value">87,500</div>
-                <div> Average Sessions</div>
+                <div className="text-value">
+                  {" "}
+                  {this.state.totalUnique ? this.state.totalUnique : "N/A"}
+                </div>
+                <div> Unique Visitors / Users</div>
               </CardBody>
               <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
                 <Line
@@ -260,8 +497,10 @@ class CompanyDashboard extends React.Component {
                 <ButtonGroup className="float-right">
                   <i className="fa fa-credit-card fa-2x" />
                 </ButtonGroup>
-                <div className="text-value">3,448</div>
-                <div> Average Units Sold</div>
+                <div className="text-value">
+                  {this.state.totalSessions ? this.state.totalSessions : "N/A"}
+                </div>
+                <div> Sessions</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -281,8 +520,11 @@ class CompanyDashboard extends React.Component {
                 <ButtonGroup className="float-right">
                   <i className="fa fa-cart-plus fa-2x" />
                 </ButtonGroup>
-                <div className="text-value">3,448</div>
-                <div> Average Orders Made</div>
+                <div className="text-value">
+                  {" "}
+                  {this.state.totalOrders ? this.state.totalOrders : "N/A"}
+                </div>
+                <div> Orders Made</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -303,8 +545,10 @@ class CompanyDashboard extends React.Component {
                 <ButtonGroup className="float-right">
                   <i className="fa fa-refresh fa-2x" />
                 </ButtonGroup>
-                <div className="text-value">7%</div>
-                <div> Average Conversion %</div>
+                <div className="text-value">
+                  ${this.state.totalSales ? this.state.totalSales : "N/A"}
+                </div>
+                <div> Total Sales</div>
               </CardBody>
               <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
                 <Line
@@ -453,166 +697,53 @@ class CompanyDashboard extends React.Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify" />
+                Table Data
               </CardHeader>
+
               <CardBody>
-                <Table responsive striped>
-                  <thead>
-                    <tr>
-                      <th>Users</th>
-                      <th>Sessions</th>
-                      <th>Orders</th>
-                      <th>Total Units Sold</th>
-                      <th>Average Order Value</th>
-                      <th>Total Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>120,484</td>
-                      <td>111,597</td>
-                      <td>5890</td>
-                      <td>5641</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$140,968</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>6,484</td>
-                      <td>5,597</td>
-                      <td>1936</td>
-                      <td>1923</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$48,055</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>1,484</td>
-                      <td>1,337</td>
-                      <td>289</td>
-                      <td>267</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$8,007</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>11,924</td>
-                      <td>10,978</td>
-                      <td>2445</td>
-                      <td>2437</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$73,085</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>120,484</td>
-                      <td>111,597</td>
-                      <td>5890</td>
-                      <td>5641</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$140,968</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>6,484</td>
-                      <td>5,597</td>
-                      <td>1936</td>
-                      <td>1923</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$48,055</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>1,484</td>
-                      <td>1,337</td>
-                      <td>289</td>
-                      <td>267</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$8,007</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>11,924</td>
-                      <td>10,978</td>
-                      <td>2445</td>
-                      <td>2437</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$73,085</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>120,484</td>
-                      <td>111,597</td>
-                      <td>5890</td>
-                      <td>5641</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$140,968</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>6,484</td>
-                      <td>5,597</td>
-                      <td>1936</td>
-                      <td>1923</td>
-                      <td>$24.99</td>
-                      <td>
-                        <strong className="text-success">$48,055</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>1,484</td>
-                      <td>1,337</td>
-                      <td>289</td>
-                      <td>267</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$8,007</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>11,924</td>
-                      <td>10,978</td>
-                      <td>2445</td>
-                      <td>2437</td>
-                      <td>$29.99</td>
-                      <td>
-                        <strong className="text-success">$73,085</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-                <Pagination>
-                  <PaginationItem disabled>
-                    <PaginationLink previous tag="button">
-                      Prev
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink tag="button">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next tag="button">
-                      Next
-                    </PaginationLink>
-                  </PaginationItem>
-                </Pagination>
+                <Row>
+                  <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Secondary Dimensions:</strong>
+                    </p>
+
+                    <Select
+                      name="form-field-name2"
+                      value={this.state.dimension}
+                      options={dimensionOptions}
+                      onChange={this.saveDimensionChanges}
+                      multi
+                      className="mb-4"
+                    />
+                  </Col>
+                  {/* <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Display Options:</strong>
+                    </p>
+                    <FormGroup>
+                      <CustomInput
+                        type="checkbox"
+                        id="users"
+                        label="users"
+                        name="users"
+                        onChange={this.handleDisplayChange}
+                        checked={this.state.displayOptions.users}
+                      />
+                    </FormGroup>
+                  </Col> */}
+                </Row>
+                <CustomTable
+                  tableData={this.state.productTableDataBody}
+                  columns={columns}
+                  hasPagination
+                  hasSort
+                  originalSize={this.state.productTableDataBody.length}
+                  pageSize={20}
+                >
+                  {this.props.children}
+                </CustomTable>
               </CardBody>
             </Card>
           </Col>

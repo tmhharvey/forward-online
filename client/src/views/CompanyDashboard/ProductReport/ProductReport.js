@@ -56,7 +56,20 @@ const displayOptions = tableOptions.displayOptions;
 var productTestData = [];
 
 const line = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
+  labels: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
   datasets: [
     {
       label: "Sessions",
@@ -77,7 +90,20 @@ const line = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
+      data: [
+        6500,
+        5900,
+        8000,
+        8100,
+        5600,
+        5500,
+        4000,
+        4400,
+        4800,
+        5600,
+        6100,
+        6200
+      ]
     },
     {
       label: "Total Orders",
@@ -98,7 +124,20 @@ const line = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [35, 42, 64, 67, 21, 55, 48]
+      data: [
+        3500,
+        4200,
+        6400,
+        6700,
+        2100,
+        5500,
+        4800,
+        4600,
+        4200,
+        4100,
+        3500,
+        3100
+      ]
     }
   ]
 };
@@ -119,7 +158,7 @@ const initialValues = {
 };
 
 var auth =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NTk2ODY2MTEsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.KnpuCBRHA4GNcdkwULfV2ABUZpW9s3w5zs1aGlPcrX0";
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NjAzNzcwNTQsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.422ZAVdOmzFbt8v1fXEATU_Ycb8xegmw2Tk8dhkyck4";
 
 class ProductReport extends React.Component {
   state = {
@@ -156,6 +195,13 @@ class ProductReport extends React.Component {
   // };
   componentDidMount = () => {
     this.apiReportHandler();
+  };
+
+  lineChartHandler = (fromDate, toDate, timeCycle) => {
+    //get the dates and parse them into an array grouped by the selected time-period.
+    // get the data for sessions and orders for those months
+    // aggregate the sessions and orders data by the time-period in which they were in
+    //render a graph with the appropriate data
   };
 
   apiReportHandler = async () => {
@@ -199,25 +245,29 @@ class ProductReport extends React.Component {
       }
     ];
 
-    //Default API call with no Second Dimension
+    console.log("API report fired----");
+    // Default API call with no Second Dimension
     if (!this.state.dateRange) {
       var apiResults = await axios.get(
         "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
         { headers }
       );
 
-      console.log(apiResults.data.elasticResult.resultsTable.source);
-      var sourceData = apiResults.data.elasticResult.resultsTable.source;
-      productTestDataHeader = sourceData.columns;
-      productTestDataBody = sourceData.rows;
+      if (apiResults.data.hasResults) {
+        console.log("API Results Data");
+        console.log(apiResults);
+        var sourceData = apiResults.data.elasticResult.resultsTable.source;
 
-      this.setState(
-        {
+        productTestDataHeader = sourceData.columns;
+        productTestDataBody = sourceData.rows;
+
+        this.setState({
           productTestDataHeader: productTestDataHeader,
           productTableDataBody: productTestDataBody
-        },
-        () => {}
-      );
+        });
+      } else {
+        console.log("The API came back with No Results");
+      }
     } else {
       var apiResults = await axios.get(
         `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
@@ -247,7 +297,7 @@ class ProductReport extends React.Component {
     e.preventDefault();
 
     var fromDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
-    var toDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
+    var toDate = moment(this.state.endDate._d, "MM/DD/YYYY").format("L");
 
     console.log(fromDate);
     console.log(toDate);
@@ -275,6 +325,7 @@ class ProductReport extends React.Component {
       };
 
       if (dimensionValue[0].value === "Day of Week") {
+        console.log("Day of week dimension change fired");
         columns = [
           {
             value: "Brand",
@@ -314,13 +365,14 @@ class ProductReport extends React.Component {
           }
         ];
         if (!this.state.dateRange) {
+          console.log("Day of week dimension change fired WITHOUT a DATE");
           var apiResults = await axios.get(
             "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
-          productTestDataHeader = sourceData.columns;
+          productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
           this.setState({
             productTestDataHeader: productTestDataHeader,
@@ -338,7 +390,7 @@ class ProductReport extends React.Component {
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
-          productTestDataHeader = sourceData.columns;
+          productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
           this.setState({
             productTestDataHeader: productTestDataHeader,
@@ -346,6 +398,7 @@ class ProductReport extends React.Component {
           });
         }
       } else if (dimensionValue[0].value === "Country/Region") {
+        console.log("API DIMENSION Country/Region report fired----");
         columns = [
           {
             value: "Brand",
@@ -408,7 +461,7 @@ class ProductReport extends React.Component {
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
-          productTestDataHeader = sourceData.columns;
+          productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
           this.setState({
             productTestDataHeader: productTestDataHeader,
@@ -416,6 +469,7 @@ class ProductReport extends React.Component {
           });
         }
       } else if (dimensionValue[0].value === "Hour") {
+        console.log("HOUR dimension change fired");
         columns = [
           {
             value: "Brand",
@@ -455,19 +509,21 @@ class ProductReport extends React.Component {
           }
         ];
         if (!this.state.dateRange) {
+          console.log("HOUR dimension change fired WITHOUT a date");
           var apiResults = await axios.get(
             "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_hour_of_day&sortOption=brand",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
-          productTestDataHeader = sourceData.columns;
+          productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
           this.setState({
             productTestDataHeader: productTestDataHeader,
             productTableDataBody: productTestDataBody
           });
         } else {
+          console.log("HOUR dimension change fired WITH a date");
           var apiResults = await axios.get(
             `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
               this.state.fromDate
@@ -478,7 +534,7 @@ class ProductReport extends React.Component {
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
-          productTestDataHeader = sourceData.columns;
+          productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
           this.setState({
             productTestDataHeader: productTestDataHeader,
