@@ -5,30 +5,15 @@ import {
   CardHeader,
   CardBody,
   Col,
-  CustomInput,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Label,
-  Input,
   Row,
   Badge,
   Pagination,
   PaginationItem,
   PaginationLink,
-  ButtonDropdown,
-  ButtonGroup,
-  ButtonToolbar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Table
 } from "reactstrap";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
-import { Formik } from "formik";
-import { Link } from "react-router-dom";
 
 // React DateRangePicker
 import "react-dates/initialize";
@@ -39,8 +24,6 @@ import "react-dates/lib/css/_datepicker.css";
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
 import dimensionData from "./data/dimensions";
-
-import * as Yup from "yup";
 import "./TrafficSourceReport.scss";
 
 const dimensionOptions = dimensionData.options;

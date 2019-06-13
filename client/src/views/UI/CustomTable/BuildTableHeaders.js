@@ -40,12 +40,12 @@ const BuildTableHeaders = ({
   sortOrder,
   activeSortName
 }) =>
-  columns.map(column => {
+  columns.map((column, Index) => {
     const sortIcons = getSortIcons(activeSortName, sortOrder, column);
     return column.sortName ? (
       <th
         className={`p-r-1 ${column.classes ? column.classes : ""}`}
-        key={column.sortName}
+        key={activeSortName + Index}
       >
         {(ignoredSortHeaders &&
           !ignoredSortHeaders.includes(column.sortName)) ||

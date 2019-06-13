@@ -5,34 +5,16 @@ import {
   CardHeader,
   CardBody,
   Col,
-  CustomInput,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Label,
-  Input,
   Row,
-  Badge,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  ButtonDropdown,
   ButtonGroup,
-  ButtonToolbar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Table
 } from "reactstrap";
 import { Bar, Line } from "react-chartjs-2";
-import { Formik } from "formik";
-import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import "./CompanyDashboard.scss";
-import Widget04 from "../UI/Widgets/Widget04";
 import GoogleMaps from "../UI/GoogleMaps/GoogleMaps";
 import axios from "axios";
+import apiAuth from "./apiAuth";
 
 import CustomTable from "../UI/CustomTable/CustomTable";
 
@@ -40,6 +22,7 @@ import CustomTable from "../UI/CustomTable/CustomTable";
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+
 // import Moment from "react-moment";
 import moment from "moment";
 
@@ -47,6 +30,9 @@ import moment from "moment";
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
 import tableOptions from "./dashboardData/dimensions";
+
+//Charts
+import ReportLineChart from "../UI/ReportLineChart/ReportLineChart";
 
 const Widget03 = lazy(() => import("../UI/Widgets/Widget03"));
 const dimensionOptions = tableOptions.dimensions;
@@ -247,8 +233,7 @@ const cardChartOpts4 = {
   }
 };
 
-var auth =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NjAzNzkxNzEsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.R8qJtu9KdVBE83wUXtNw2TT7DCEYfUk3CuwzwC04qZo";
+var auth = "Bearer " + apiAuth.auth;
 
 var columns = [];
 
@@ -267,7 +252,9 @@ class CompanyDashboard extends React.Component {
     totalSessions: null,
     totalUnique: null,
     totalOrders: null,
-    totalSales: null
+    totalSales: null,
+    chartSessionData: [],
+    labelData: []
   };
 
   componentDidMount = () => {
@@ -281,10 +268,6 @@ class CompanyDashboard extends React.Component {
       Authorization: auth
     };
     columns = [
-      {
-        value: "Brand",
-        elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
-      },
       {
         value: "Sessions",
         elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
@@ -329,6 +312,11 @@ class CompanyDashboard extends React.Component {
       //   { headers }
       // );
 
+      // var orderTotalSummary = await axios.get(
+      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/OrderTotalSummaryReport/GetReportResults",
+      //   { headers }
+      // );
+
       if (apiResults.data.hasResults) {
         console.log("API Results Data");
         console.log(apiResults);
@@ -344,6 +332,7 @@ class CompanyDashboard extends React.Component {
           },
           () => {
             this.aggregateHandler(productTestDataBody);
+            this.chartDataHandler(productTestDataBody);
           }
         );
       } else {
@@ -380,6 +369,7 @@ class CompanyDashboard extends React.Component {
         },
         () => {
           this.aggregateHandler(productTestDataBody);
+          this.chartDataHandler(productTestDataBody);
         }
       );
     }
@@ -392,6 +382,7 @@ class CompanyDashboard extends React.Component {
     var totaledSales = 0;
 
     var dataMap = await aggregateData.map(data => {
+      console.log(data[1]);
       totaledSessionData = totaledSessionData + data[1];
       totaledUnique = totaledUnique + data[2];
       totaledOrders = totaledOrders + data[4];
@@ -403,6 +394,30 @@ class CompanyDashboard extends React.Component {
       totalOrders: totaledOrders,
       totalSales: totaledSales.toFixed(2)
     });
+  };
+
+  chartDataHandler = async aggregateData => {
+    if (!this.state.dimensionCheck) {
+      var sessionDataArray = [];
+      var orderDataArray = [];
+      var LabelDataArray = [];
+
+      var dataMap = await aggregateData.map(data => {
+        console.log(data[1]);
+        sessionDataArray.push(data[1]);
+        LabelDataArray.push(data[0]);
+        orderDataArray.push(data[4]);
+      });
+
+      this.setState(
+        {
+          chartSessionData: sessionDataArray,
+          labelData: LabelDataArray,
+          orderData: orderDataArray
+        },
+        () => {}
+      );
+    }
   };
 
   dateChangeHandler = async e => {
@@ -470,7 +485,7 @@ class CompanyDashboard extends React.Component {
         </Row>
         <Row>
           <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-primary">
+            <Card className="text-white bg-indigo theme-color">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="icon-people fa-2x" />
@@ -490,12 +505,11 @@ class CompanyDashboard extends React.Component {
               </div>
             </Card>
           </Col>
-
           <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-success">
+            <Card className="text-white bg-primary">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
-                  <i className="fa fa-credit-card fa-2x" />
+                  <i className="fa fa-vcard-o fa-2x" />
                 </ButtonGroup>
                 <div className="text-value">
                   {this.state.totalSessions ? this.state.totalSessions : "N/A"}
@@ -515,7 +529,7 @@ class CompanyDashboard extends React.Component {
             </Card>
           </Col>
           <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-danger">
+            <Card className="text-white bg-success">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="fa fa-cart-plus fa-2x" />
@@ -561,10 +575,17 @@ class CompanyDashboard extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="12" lg="6">
-            <GoogleMaps />
+          {/* <GoogleMaps /> */}
+          <Col sm="12" lg="9">
+            <ReportLineChart
+              sessionData={this.state.chartSessionData}
+              labelData={this.state.labelData}
+              orderData={this.state.orderData}
+              name={"Total Sessions/Orders"}
+            />
           </Col>
-          <Col sm="12" lg="6">
+
+          <Col sm="12" lg="3">
             <Card>
               <CardHeader>Global Sales Breakdown</CardHeader>
               <CardBody>
@@ -576,7 +597,6 @@ class CompanyDashboard extends React.Component {
                   <thead className="thead-light">
                     <tr>
                       <th className="text-center">Country</th>
-                      <th className="text-center">-</th>
                       <th className="text-center">Percentage</th>
                     </tr>
                   </thead>
@@ -589,9 +609,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -604,9 +622,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -619,9 +635,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -634,9 +648,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -649,9 +661,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -664,9 +674,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -679,9 +687,7 @@ class CompanyDashboard extends React.Component {
                           id="br"
                         />
                       </td>
-                      <td className="text-center">
-                        <strong>2.345</strong>
-                      </td>
+
                       <td className="text-center">
                         <strong>10%</strong>
                       </td>
@@ -697,12 +703,12 @@ class CompanyDashboard extends React.Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify" />
-                Table Data
+                Data Aggregate Table
               </CardHeader>
 
               <CardBody>
                 <Row>
-                  <Col sm="12" lg="3">
+                  {/* <Col sm="12" lg="3">
                     <p>
                       <i className="icon-wrench mr-2" />
                       <strong>Secondary Dimensions:</strong>
@@ -716,7 +722,7 @@ class CompanyDashboard extends React.Component {
                       multi
                       className="mb-4"
                     />
-                  </Col>
+                  </Col> */}
                   {/* <Col sm="12" lg="3">
                     <p>
                       <i className="icon-wrench mr-2" />

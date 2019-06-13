@@ -1,34 +1,8 @@
 import React, { Component, lazy } from "react";
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  Col,
-  CustomInput,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Label,
-  Input,
-  Row,
-  Badge,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  ButtonDropdown,
-  ButtonGroup,
-  ButtonToolbar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Table
-} from "reactstrap";
-import { Bar, Line } from "react-chartjs-2";
+import { Button, Card, CardHeader, CardBody, Col, Row } from "reactstrap";
+import { Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { Formik } from "formik";
-import { Link } from "react-router-dom";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 
 // React DateRangePicker
@@ -37,6 +11,7 @@ import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 // import Moment from "react-moment";
 import moment from "moment";
+import apiAuth from "../apiAuth";
 
 //Dimensions
 import Select from "react-select";
@@ -157,8 +132,7 @@ const initialValues = {
   accept: false
 };
 
-var auth =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtb0NsaWVudEJldGEiLCJGb3J3YXJkQ2xpZW50UGxhdGZvcm1BcGlLZXkiOiJCZXRhMjM0NUAjJCUiLCJleHAiOjE1NjAxOTc3MjAsImlzcyI6ImZvcndhcmQub25saW5lIiwiYXVkIjoiZm9yd2FyZC5vbmxpbmUifQ.UFGvjdFGTahET6DN4D9VvCaVsYKPaFWiHfW0Gs_uEig";
+var auth = "Bearer " + apiAuth.auth;
 
 class CategoryReport extends React.Component {
   state = {
