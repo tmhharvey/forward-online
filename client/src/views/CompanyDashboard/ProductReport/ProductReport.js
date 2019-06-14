@@ -266,10 +266,10 @@ class ProductReport extends React.Component {
         if (!this.state.dateRange) {
           console.log("Day of week dimension change fired WITHOUT a DATE");
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_day_of_week&sortOption=brand",
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
             { headers }
           );
-          console.log(apiResults.data.elasticResult.resultsTable.source);
+          console.log(apiResults.data.elasticResult);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
           productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
@@ -289,7 +289,7 @@ class ProductReport extends React.Component {
               this.state.fromDate
             }&toDate=${
               this.state.toDate
-            }&permutation=group_by_product_sku_and_day_of_week&sortOption=brand`,
+            }&permutation=group_by_brand_and_day_of_week&sortOption=brand`,
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);

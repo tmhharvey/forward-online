@@ -382,7 +382,6 @@ class CompanyDashboard extends React.Component {
     var totaledSales = 0;
 
     var dataMap = await aggregateData.map(data => {
-      console.log(data[1]);
       totaledSessionData = totaledSessionData + data[1];
       totaledUnique = totaledUnique + data[2];
       totaledOrders = totaledOrders + data[4];
@@ -437,7 +436,6 @@ class CompanyDashboard extends React.Component {
       },
       () => {
         this.apiReportHandler();
-        console.log(this.state);
       }
     );
   };
@@ -485,7 +483,7 @@ class CompanyDashboard extends React.Component {
         </Row>
         <Row>
           <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-indigo theme-color">
+            <Card className="text-white bg-cyan theme-color">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="icon-people fa-2x" />
@@ -554,7 +552,7 @@ class CompanyDashboard extends React.Component {
           </Col>
 
           <Col sm="6" md="4" lg="3">
-            <Card className="text-white bg-info">
+            <Card className="text-white bg-indigo theme-color">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="fa fa-refresh fa-2x" />
