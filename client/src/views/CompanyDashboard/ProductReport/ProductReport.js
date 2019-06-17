@@ -19,7 +19,7 @@ import tableOptions from "./helpers/data/dimensions";
 
 //charts
 import charts from "../../UI/Charts";
-import ReportLineChart from "../../UI/ReportLineChart/ReportLineChart";
+import ReportBarChart from "../../UI/ReportBarChart/ReportBarChart";
 
 import axios from "axios";
 import "./ProductReport.scss";
@@ -64,9 +64,9 @@ class ProductReport extends React.Component {
 
       var dataMap = await aggregateData.map(data => {
         console.log(data[1]);
-        sessionDataArray.push(data[1]);
+        sessionDataArray.push(data[2]);
         LabelDataArray.push(data[0]);
-        orderDataArray.push(data[4]);
+        orderDataArray.push(data[5]);
       });
 
       this.setState(
@@ -102,28 +102,32 @@ class ProductReport extends React.Component {
           elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
         },
         {
-          value: "Sessions",
+          value: "Product Sku",
           elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
         },
         {
-          value: "Users",
+          value: "Sessions",
           elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
         },
         {
-          value: "Total Units",
+          value: "Users",
           elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
         },
         {
-          value: "Orders",
+          value: "Total Units",
           elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
         },
         {
-          value: "eComm Revenue",
+          value: "Orders",
           elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
         },
         {
-          value: "Conversion Rate",
+          value: "eCommerce Revenue",
           elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+        },
+        {
+          value: "Conversion Rate",
+          elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
         },
         {
           value: "Avg Order Value",
@@ -135,7 +139,7 @@ class ProductReport extends React.Component {
       // Default API call with no Second Dimension
       if (!this.state.dateRange) {
         var apiResults = await axios.get(
-          "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
+          "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku&sortOption=sessions&sortOrientation=Desc",
           { headers }
         );
 
@@ -165,7 +169,7 @@ class ProductReport extends React.Component {
           this.state.fromDate
         }&toDate=${
           this.state.toDate
-        }&permutation=group_by_brand&sortOption=brand`;
+        }&permutation=group_by_product_sku&sortOption=sessions&sortOrientation=Desc`;
         console.log(url);
         var apiResults = await axios.get(url, { headers });
 
@@ -230,43 +234,48 @@ class ProductReport extends React.Component {
             value: "Product",
             elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
           },
+
           {
-            value: "Day of Week",
+            value: "Product Sku",
             elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
           },
           {
+            value: "Day of Week",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+          },
+          {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[3]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[4]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[5]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[6]}</div>
           },
           {
-            value: "eComm Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[7]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[8]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
           }
         ];
         if (!this.state.dateRange) {
           console.log("Day of week dimension change fired WITHOUT a DATE");
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_day_of_week&sortOption=brand",
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=06/01/2019&toDate=06/02/2019&permutation=group_by_product_sku_and_day_of_week&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult);
@@ -289,10 +298,10 @@ class ProductReport extends React.Component {
               this.state.fromDate
             }&toDate=${
               this.state.toDate
-            }&permutation=group_by_brand_and_day_of_week&sortOption=brand`,
+            }&permutation=group_by_product_sku_and_day_of_week&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
-          console.log(apiResults.data.elasticResult.resultsTable.source);
+          console.log(apiResults);
           var sourceData = apiResults.data.elasticResult.resultsTable.source;
           productTestDataHeader = columns;
           productTestDataBody = sourceData.rows;
@@ -313,42 +322,51 @@ class ProductReport extends React.Component {
             value: "Product",
             elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
           },
+
           {
-            value: "Country/Region",
+            value: "Product Sku",
             elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
           },
           {
+            value: "Country",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Region",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[3]}</div>
+          },
+          {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[4]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[5]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[6]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[7]}</div>
           },
           {
-            value: "eComm Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[8]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[10]}</div>
           }
         ];
         if (!this.state.dateRange) {
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_country_region&sortOption=brand",
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -365,7 +383,7 @@ class ProductReport extends React.Component {
               this.state.fromDate
             }&toDate=${
               this.state.toDate
-            }&permutation=group_by_brand_and_country_region&sortOption=brand`,
+            }&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -377,50 +395,55 @@ class ProductReport extends React.Component {
             productTableDataBody: productTestDataBody
           });
         }
-      } else if (dimensionValue[0].value === "Hour") {
+      } else if (dimensionValue[0].value === "Hour of Day") {
         console.log("HOUR dimension change fired");
         columns = [
           {
             value: "Product",
             elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
           },
+
           {
-            value: "Hour of Day",
+            value: "Product Sku",
             elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
           },
           {
+            value: "Hour of Day",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+          },
+          {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[3]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[4]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[5]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[6]}</div>
           },
           {
-            value: "eComm Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[7]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[8]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[8] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
           }
         ];
         if (!this.state.dateRange) {
           console.log("HOUR dimension change fired WITHOUT a date");
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand_and_hour_of_day&sortOption=brand",
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_hour_of_day&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -438,7 +461,7 @@ class ProductReport extends React.Component {
               this.state.fromDate
             }&toDate=${
               this.state.toDate
-            }&permutation=group_by_brand_and_hour_of_day&sortOption=brand`,
+            }&permutation=group_by_product_sku_and_hour_of_day&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -450,6 +473,8 @@ class ProductReport extends React.Component {
             productTableDataBody: productTestDataBody
           });
         }
+      } else {
+        this.apiReportHandler();
       }
     } else {
       this.apiReportHandler();
@@ -545,7 +570,7 @@ class ProductReport extends React.Component {
         </Row>
         <Row>
           <Col sm="12">
-            <ReportLineChart
+            <ReportBarChart
               sessionData={this.state.chartSessionData}
               labelData={this.state.labelData}
               orderData={this.state.orderData}

@@ -26,23 +26,24 @@ export default {
       class: "mt-4" // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: "Performance Report",
-      url: "/company-dashboard/product-report",
+      name: "Traffic Source Perf.",
+      url: "/company-dashboard/traffic-source-report",
       icon: "fa fa-line-chart"
     },
     {
-      name: "Category Report",
+      name: "Category Performance",
       url: "/company-dashboard/category-report",
       icon: "fa fa-line-chart"
     },
     {
-      name: "Brand Report",
+      name: "Brand Performance",
       url: "/company-dashboard/brand-report",
       icon: "fa fa-line-chart"
     },
+
     {
-      name: "Traffic Source Report",
-      url: "/company-dashboard/traffic-source-report",
+      name: "Product Performance",
+      url: "/company-dashboard/product-report",
       icon: "fa fa-line-chart"
     }
   ]

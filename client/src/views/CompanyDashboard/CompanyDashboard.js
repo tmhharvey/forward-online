@@ -32,7 +32,7 @@ import "react-select/dist/react-select.min.css";
 import tableOptions from "./dashboardData/dimensions";
 
 //Charts
-import ReportLineChart from "../UI/ReportLineChart/ReportLineChart";
+import ReportBarChart from "../UI/ReportBarChart/ReportBarChart";
 
 const Widget03 = lazy(() => import("../UI/Widgets/Widget03"));
 const dimensionOptions = tableOptions.dimensions;
@@ -307,10 +307,12 @@ class CompanyDashboard extends React.Component {
         { headers }
       );
 
-      // var countryBreakdownResults = await axios.get(
-      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions",
+      // var countryApiResults = await axios.get(
+      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc",
       //   { headers }
       // );
+      // console.log("Country API results");
+      // console.log(countryApiResults);
 
       // var orderTotalSummary = await axios.get(
       //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/OrderTotalSummaryReport/GetReportResults",
@@ -320,6 +322,7 @@ class CompanyDashboard extends React.Component {
       if (apiResults.data.hasResults) {
         console.log("API Results Data");
         console.log(apiResults);
+
         var sourceData = apiResults.data.elasticResult.resultsTable.source;
 
         productTestDataHeader = sourceData.columns;
@@ -356,6 +359,18 @@ class CompanyDashboard extends React.Component {
         }&permutation=group_by_brand&sortOption=brand`,
         { headers }
       );
+
+      // var countryApiResults = await axios.get(
+      //   `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+      //     this.state.fromDate
+      //   }&toDate=${
+      //     this.state.toDate
+      //   }&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc`,
+      //   { headers }
+      // );
+
+      // console.log("Country API results");
+      // console.log(countryApiResults);
 
       console.log(apiResults.data.elasticResult.resultsTable.source);
       var sourceData = apiResults.data.elasticResult.resultsTable.source;
@@ -492,7 +507,7 @@ class CompanyDashboard extends React.Component {
                   {" "}
                   {this.state.totalUnique ? this.state.totalUnique : "N/A"}
                 </div>
-                <div> Unique Visitors / Users</div>
+                <div> Unique Visitors</div>
               </CardBody>
               <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
                 <Line
@@ -512,7 +527,7 @@ class CompanyDashboard extends React.Component {
                 <div className="text-value">
                   {this.state.totalSessions ? this.state.totalSessions : "N/A"}
                 </div>
-                <div> Sessions</div>
+                <div> Total Sessions</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -536,7 +551,7 @@ class CompanyDashboard extends React.Component {
                   {" "}
                   {this.state.totalOrders ? this.state.totalOrders : "N/A"}
                 </div>
-                <div> Orders Made</div>
+                <div> Total Orders</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -555,7 +570,7 @@ class CompanyDashboard extends React.Component {
             <Card className="text-white bg-indigo theme-color">
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
-                  <i className="fa fa-refresh fa-2x" />
+                  <i className="fa fa-money fa-2x" />
                 </ButtonGroup>
                 <div className="text-value">
                   ${this.state.totalSales ? this.state.totalSales : "N/A"}
@@ -575,7 +590,7 @@ class CompanyDashboard extends React.Component {
         <Row>
           {/* <GoogleMaps /> */}
           <Col sm="12" lg="9">
-            <ReportLineChart
+            <ReportBarChart
               sessionData={this.state.chartSessionData}
               labelData={this.state.labelData}
               orderData={this.state.orderData}
@@ -585,7 +600,7 @@ class CompanyDashboard extends React.Component {
 
           <Col sm="12" lg="3">
             <Card>
-              <CardHeader>Global Sales Breakdown</CardHeader>
+              <CardHeader>Sales Breakdown by Country</CardHeader>
               <CardBody>
                 <Table
                   hover
@@ -609,20 +624,20 @@ class CompanyDashboard extends React.Component {
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>67%</strong>
                       </td>
                     </tr>
                     <tr>
                       <td className="text-center">
                         <i
-                          className="flag-icon flag-icon-br h4 mb-0"
+                          className="flag-icon flag-icon-ca h4 mb-0"
                           title="br"
                           id="br"
                         />
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>13%</strong>
                       </td>
                     </tr>
                     <tr>
@@ -635,20 +650,20 @@ class CompanyDashboard extends React.Component {
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>7%</strong>
                       </td>
                     </tr>
                     <tr>
                       <td className="text-center">
                         <i
-                          className="flag-icon flag-icon-in h4 mb-0"
+                          className="flag-icon flag-icon-br h4 mb-0"
                           title="br"
                           id="br"
                         />
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>5%</strong>
                       </td>
                     </tr>
                     <tr>
@@ -661,7 +676,7 @@ class CompanyDashboard extends React.Component {
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>3%</strong>
                       </td>
                     </tr>
                     <tr>
@@ -674,7 +689,7 @@ class CompanyDashboard extends React.Component {
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>3%</strong>
                       </td>
                     </tr>
                     <tr>
@@ -687,7 +702,7 @@ class CompanyDashboard extends React.Component {
                       </td>
 
                       <td className="text-center">
-                        <strong>10%</strong>
+                        <strong>2%</strong>
                       </td>
                     </tr>
                   </tbody>
