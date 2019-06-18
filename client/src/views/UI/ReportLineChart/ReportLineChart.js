@@ -14,7 +14,7 @@ const options = {
 
 class ReportLineChart extends Component {
   render() {
-    let line = {
+    let bar = {
       labels: this.props.labelData,
       datasets: [
         {

@@ -131,7 +131,7 @@ class ProductReport extends React.Component {
         },
         {
           value: "Avg Order Value",
-          elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
         }
       ];
 
@@ -241,35 +241,35 @@ class ProductReport extends React.Component {
           },
           {
             value: "Day of Week",
-            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
           },
           {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[6]}</div>
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
           },
           {
             value: "eCommerce Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[8]}</div>
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
+            elements: (index, row) => <div>{!row[9] ? "n/a" : row[9]}</div>
           }
         ];
         if (!this.state.dateRange) {
@@ -329,39 +329,39 @@ class ProductReport extends React.Component {
           },
           {
             value: "Country",
-            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
           },
           {
             value: "Region",
-            elements: (index, row) => <div>{!row[1] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
           },
           {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[6]}</div>
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
           },
           {
             value: "eCommerce Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[8]}</div>
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
+            elements: (index, row) => <div>{!row[9] ? "n/a" : row[9]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[10]}</div>
+            elements: (index, row) => <div>{!row[10] ? "n/a" : row[10]}</div>
           }
         ];
         if (!this.state.dateRange) {
@@ -409,35 +409,35 @@ class ProductReport extends React.Component {
           },
           {
             value: "Hour of Day",
-            elements: (index, row) => <div>{!row[1] ? "n/a" : row[2]}</div>
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
           },
           {
             value: "Sessions",
-            elements: (index, row) => <div>{!row[2] ? "n/a" : row[3]}</div>
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
           },
           {
             value: "Users",
-            elements: (index, row) => <div>{!row[3] ? "n/a" : row[4]}</div>
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
           },
           {
             value: "Total Units",
-            elements: (index, row) => <div>{!row[4] ? "n/a" : row[5]}</div>
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
           },
           {
             value: "Orders",
-            elements: (index, row) => <div>{!row[5] ? "n/a" : row[6]}</div>
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
           },
           {
             value: "eCommerce Revenue",
-            elements: (index, row) => <div>{!row[6] ? "n/a" : row[7]}</div>
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
           },
           {
             value: "Conversion Rate",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[8]}</div>
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
           },
           {
             value: "Avg Order Value",
-            elements: (index, row) => <div>{!row[7] ? "n/a" : row[9]}</div>
+            elements: (index, row) => <div>{!row[9] ? "n/a" : row[9]}</div>
           }
         ];
         if (!this.state.dateRange) {
