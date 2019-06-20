@@ -1,373 +1,566 @@
 import React, { Component, lazy } from "react";
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  Col,
-  Row,
-  Badge,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Table
-} from "reactstrap";
+import { Button, Card, CardHeader, CardBody, Col, Row } from "reactstrap";
 import { Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
+import CustomTable from "../../UI/CustomTable/CustomTable";
+import apiAuth from "../apiAuth";
 
 // React DateRangePicker
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+// import Moment from "react-moment";
+import moment from "moment";
 
 //Dimensions
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
-import dimensionData from "./data/dimensions";
+import tableOptions from "./data/dimensions";
+
+//charts
+import charts from "../../UI/Charts";
+import ReportBarChart from "../../UI/ReportBarChart/ReportBarChart";
+
+import axios from "axios";
 import "./TrafficSourceReport.scss";
 
-const dimensionOptions = dimensionData.options;
-var productTestData = [];
+const dimensionOptions = tableOptions.dimensions;
+// const displayOptions = tableOptions.displayOptions;
 
-const line = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      label: "Sessions",
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: "rgb(32,168,216, 0.4)",
-      borderColor: "rgb(32,168,216)",
-      borderCapStyle: "butt",
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: "miter",
-      pointBorderColor: "rgb(32,168,216)",
-      pointBackgroundColor: "#fff",
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: "rgb(32,168,216)",
-      pointHoverBorderColor: "rgb(32,168,216)",
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
-    },
-    {
-      label: "Transactions",
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: "rgb(77,189,116, 0.4)",
-      borderColor: "rgb(77,189,116)",
-      borderCapStyle: "butt",
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: "miter",
-      pointBorderColor: "rgb(77,189,116)",
-      pointBackgroundColor: "#fff",
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: "rgb(77,189,116)",
-      pointHoverBorderColor: "rgba(220,220,220,1)",
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [35, 42, 64, 67, 21, 55, 48]
-    }
-  ]
+var columns = [];
+
+const initialValues = {
+  accept: false
 };
 
-const options = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  responsive: true,
-  maintainAspectRatio: false
-};
+var auth = "Bearer " + apiAuth.auth;
 
 class TrafficSourceReport extends React.Component {
   state = {
-    productTableData: [],
-    value: [""]
+    productTestDataHeader: [],
+    productTableDataBody: [],
+    fromDate: "",
+    toDate: "",
+    dimension: [""],
+    displayOptions: {
+      users: true
+    },
+    productReportData: columns,
+    dateRange: false,
+    dimensionCheck: false,
+    chartSessionData: [],
+    labelData: []
   };
 
-  componentDidMount = async () => {
-    // call the /Security/GetToken with creds to get a JWT
-    // const response = await axios.get(
-    //  "/Security/GetToken"
-    // );
-    // const reportData = await axios.get(
-    //  "<API CALL HERE>"
-    // );
-    //GROUP CATEGORY BY DATES
-    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_channel_and_day_of_week
-    //SORTING OPTIONS
-    // #/definitions/Summary_ProductPerformance_Report_SortOptions
-    //AVAILABLE DATA RETURNED BY SORTING
-    // {
-    //     brand,
-    //     sessions,
-    //     users,
-    //     total_units,
-    //     orders,
-    //     ecomm_revenue,
-    //     conversion_rate;
-    // }
-    // EXAMPLE API CALL??
-    // /api/reporting/v0.1/ProductPerformanceReport/#/definitions/group_by_channel_and_day_of_week/#/definitions/Summary_ProductPerformance_Report_SortOptions
-    //API CALL 2: Web Events Detail Report
-    // /api/reporting/v0.1/WebEventsDetailReport/GetReportResults
-    //AVAILABLE DATA RETURNED BY SORTING
-    // {
-    //    bounceRate: "29%",
-    //     pagesPerSession: "3.2",
-    //     averageSessionDuration: "5 minutes",
-    //     conversionRate: "16%",
-    // }
-    // EXAMPLE API CALL??
-    // /api/reporting/v0.1/WebEventsDetailReport/GetReportResults/#/definitions/WebEvents_Permutations
+  componentDidMount = () => {
+    console.log("component did mount");
+    this.apiReportHandler();
+  };
 
-    productTestData = [
-      {
-        trafficSource: "Source 1",
-        users: "313,450",
-        sessions: "278,423",
-        bounceRate: "29%",
-        pagesPerSession: "4.2",
-        averageSessionDuration: "6 minutes",
-        conversionRate: "16%",
-        orders: "36,581",
-        totalUnitsSold: "19,342",
-        averageOrderValue: "$19.99",
-        totalRevenue: "$186,746"
-      },
-      {
-        trafficSource: "Source 2",
-        users: "413,450",
-        sessions: "188,423",
-        bounceRate: "29%",
-        pagesPerSession: "3.2",
-        averageSessionDuration: "5 minutes",
-        conversionRate: "16%",
-        orders: "24,581",
-        totalUnitsSold: "22,342",
-        averageOrderValue: "$19.99",
-        totalRevenue: "$146,746"
+  chartDataHandler = async aggregateData => {
+    if (!this.state.dimensionCheck) {
+      var sessionDataArray = [];
+      var orderDataArray = [];
+      var LabelDataArray = [];
+
+      var dataMap = await aggregateData.map(data => {
+        console.log(data[1]);
+        sessionDataArray.push(data[2]);
+        LabelDataArray.push(data[0]);
+        orderDataArray.push(data[5]);
+      });
+
+      this.setState(
+        {
+          chartSessionData: sessionDataArray,
+          labelData: LabelDataArray,
+          orderData: orderDataArray
+        },
+        () => {}
+      );
+    }
+  };
+
+  lineChartHandler = (fromDate, toDate, timeCycle) => {
+    //get the dates and parse them into an array grouped by the selected time-period.
+    // get the data for sessions and orders for those months
+    // aggregate the sessions and orders data by the time-period in which they were in
+    //render a graph with the appropriate data
+  };
+
+  apiReportHandler = async () => {
+    console.log("api handler ran");
+    if (this.state.dimensionCheck) {
+      this.dimensionHandler();
+    } else {
+      var productTestDataHeader = "";
+      var productTestDataBody = "";
+      const headers = {
+        Authorization: auth
+      };
+      columns = [
+        {
+          value: "Traffic Source",
+          elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+        },
+        {
+          value: "Sessions",
+          elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+        },
+        {
+          value: "Users",
+          elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+        },
+        {
+          value: "Total Units",
+          elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+        },
+        {
+          value: "Orders",
+          elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+        },
+        {
+          value: "eCommerce Revenue",
+          elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+        },
+        {
+          value: "Conversion Rate",
+          elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+        },
+        {
+          value: "Avg Order Value",
+          elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+        },
+        {
+          value: "Bounce Rate",
+          elements: (index, row) => <div>{row[8]}</div>
+        },
+        {
+          value: "Pages Per Session",
+          elements: (index, row) => <div>{row[9]}</div>
+        },
+        {
+          value: "Avg Session Duration",
+          elements: (index, row) => <div>{row[10]}</div>
+        }
+      ];
+
+      console.log("API report fired----");
+      // Default API call with no Second Dimension
+      if (!this.state.dateRange) {
+        var apiResults = await axios.get(
+          "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_channel&sortOption=sessions&sortOrientation=Desc",
+          { headers }
+        );
+
+        if (apiResults.data.hasResults) {
+          console.log("API Results Data");
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+
+          this.setState(
+            {
+              productTestDataHeader: productTestDataHeader,
+              productTableDataBody: productTestDataBody
+            },
+            () => {
+              this.chartDataHandler(productTestDataBody);
+            }
+          );
+        } else {
+          console.log("The API came back with No Results");
+        }
+      } else {
+        console.log("API report fired WITH a date range");
+        var url = `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+          this.state.fromDate
+        }&toDate=${
+          this.state.toDate
+        }&permutation=group_by_channel&sortOption=sessions&sortOrientation=Desc`;
+        console.log(url);
+        var apiResults = await axios.get(url, { headers });
+
+        console.log(apiResults.data.elasticResult.resultsTable.source);
+        var sourceData = apiResults.data.elasticResult.resultsTable.source;
+        productTestDataHeader = sourceData.columns;
+        productTestDataBody = sourceData.rows;
+
+        this.setState(
+          {
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          },
+          () => {
+            this.chartDataHandler(productTestDataBody);
+          }
+        );
       }
-    ];
+    }
+  };
 
-    this.setState({
-      productTableData: productTestData
-    });
+  dateChangeHandler = async e => {
+    console.log("date change handler fired");
+    e.preventDefault();
+
+    var fromDate = moment(this.state.startDate._d, "MM/DD/YYYY").format("L");
+    var toDate = moment(this.state.endDate._d, "MM/DD/YYYY").format("L");
+
+    console.log(fromDate);
+    console.log(toDate);
+
+    this.setState(
+      {
+        fromDate: fromDate,
+        toDate: toDate,
+        dateRange: true
+      },
+      () => {
+        if (this.state.dimensionCheck) {
+          this.dimensionHandler();
+        } else {
+          this.apiReportHandler();
+        }
+      }
+    );
   };
 
   dimensionHandler = async () => {
-    var dimensionValue = [...this.state.value];
-    var updatedDimensionValue;
-    var finalDimensionValue = [];
-    if (dimensionValue[0]) {
-      var updatedDimensionValue = await dimensionValue.map(dimension => {
-        if (dimension.value === "Device") {
-          return [
+    console.log("dimension handler fired");
+    if (this.state.dimension) {
+      var dimensionValue = [...this.state.dimension];
+      var productTestDataHeader = "";
+      var productTestDataBody = "";
+      const headers = {
+        Authorization: auth
+      };
+
+      if (dimensionValue[0].value === "Day of Week") {
+        console.log("Day of week dimension change fired");
+        columns = [
+          {
+            value: "Traffic Source",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Day of Week",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
+          },
+          {
+            value: "Bounce Rate",
+            elements: (index, row) => <div>{row[9]}</div>
+          },
+          {
+            value: "Pages Per Session",
+            elements: (index, row) => <div>{row[10]}</div>
+          },
+          {
+            value: "Avg Session Duration",
+            elements: (index, row) => <div>{row[11]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          console.log("Day of week dimension change fired WITHOUT a DATE");
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_channel_and_day_of_week&sortOption=sessions&sortOrientation=Desc",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          productTestDataBody = sourceData.rows;
+          this.setState(
             {
-              dimension: "Smart Phone",
-              trafficSource: "Source 1",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "29%",
-              pagesPerSession: "3.2",
-              averageSessionDuration: "5 minutes",
-              conversionRate: "16%",
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
+              productTestDataHeader: productTestDataHeader,
+              productTableDataBody: productTestDataBody
             },
-            {
-              dimension: "Tablet",
-              trafficSource: "Source 1",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "16%",
-              pagesPerSession: "2.8",
-              averageSessionDuration: "7 minutes",
-              conversionRate: "19%",
-              orders: "12,581",
-              totalUnitsSold: "2,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$36,746"
-            },
-            {
-              dimension: "Desktop",
-              trafficSource: "Source 1",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "16%",
-              pagesPerSession: "2.8",
-              averageSessionDuration: "7 minutes",
-              conversionRate: "19%",
-              orders: "3,581",
-              totalUnitsSold: "6,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$86,746"
-            },
-            {
-              dimension: "Smart Phone",
-              trafficSource: "Source 2",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "29%",
-              pagesPerSession: "3.2",
-              averageSessionDuration: "5 minutes",
-              conversionRate: "16%",
-              orders: "5,581",
-              totalUnitsSold: "8,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$42,746"
-            },
-            {
-              dimension: "Tablet",
-              trafficSource: "Source 2",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "16%",
-              pagesPerSession: "2.8",
-              averageSessionDuration: "7 minutes",
-              conversionRate: "19%",
-              orders: "4,581",
-              totalUnitsSold: "7,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$58,746"
-            },
-            {
-              dimension: "Desktop",
-              trafficSource: "Source 2",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "16%",
-              pagesPerSession: "2.8",
-              averageSessionDuration: "7 minutes",
-              conversionRate: "19%",
-              orders: "12,581",
-              totalUnitsSold: "9,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$86,746"
+            () => {
+              this.chartDataHandler(productTestDataBody);
             }
-          ];
-        } else if (dimension.value === "State") {
-          return [
+          );
+        } else {
+          console.log("dimension Day of Week with a date range");
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_channel_and_day_of_week&sortOption=sessions&sortOrientation=Desc`,
+            { headers }
+          );
+          console.log(apiResults);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          productTestDataBody = sourceData.rows;
+          this.setState(
             {
-              trafficSource: "Source 1",
-              dimension: "Colorado",
-              users: "113,450",
-              sessions: "78,423",
-              bounceRate: "29%",
-              pagesPerSession: "3.2",
-              averageSessionDuration: "5 minutes",
-              conversionRate: "16%",
-              orders: "12,581",
-              totalUnitsSold: "5,342",
-              averageOrderValue: "$19.99",
-              totalRevenue: "$76,746"
+              productTestDataHeader: productTestDataHeader,
+              productTableDataBody: productTestDataBody
+            },
+            () => {
+              this.chartDataHandler(productTestDataBody);
             }
-          ];
+          );
         }
-      });
+      } else if (dimensionValue[0].value === "Country/Region") {
+        console.log("API DIMENSION Country/Region report fired----");
+        columns = [
+          {
+            value: "Traffic Source",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
+          {
+            value: "Country",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Region",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[9] ? "n/a" : row[9]}</div>
+          },
+          {
+            value: "Bounce Rate",
+            elements: (index, row) => <div>{row[10]}</div>
+          },
+          {
+            value: "Pages Per Session",
+            elements: (index, row) => <div>{row[11]}</div>
+          },
+          {
+            value: "Avg Session Duration",
+            elements: (index, row) => <div>{row[12]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_channel_and_country_region&sortOption=sessions&sortOrientation=Desc",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = sourceData.columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        } else {
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_channel_and_country_region&sortOption=sessions&sortOrientation=Desc`,
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        }
+      } else if (dimensionValue[0].value === "Hour of Day") {
+        console.log("HOUR dimension change fired");
+        columns = [
+          {
+            value: "Traffic Source",
+            elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          },
 
-      finalDimensionValue = updatedDimensionValue[0];
-      console.log("=== final Dimension Final ===");
-      console.log(finalDimensionValue);
-
-      this.setState({
-        productTableData: finalDimensionValue
-      });
+          {
+            value: "Hour of Day",
+            elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          },
+          {
+            value: "Sessions",
+            elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          },
+          {
+            value: "Users",
+            elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          },
+          {
+            value: "Total Units",
+            elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          },
+          {
+            value: "Orders",
+            elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          },
+          {
+            value: "eCommerce Revenue",
+            elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          },
+          {
+            value: "Conversion Rate",
+            elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          },
+          {
+            value: "Avg Order Value",
+            elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
+          },
+          {
+            value: "Bounce Rate",
+            elements: (index, row) => <div>{row[9]}</div>
+          },
+          {
+            value: "Pages Per Session",
+            elements: (index, row) => <div>{row[10]}</div>
+          },
+          {
+            value: "Avg Session Duration",
+            elements: (index, row) => <div>{row[11]}</div>
+          }
+        ];
+        if (!this.state.dateRange) {
+          console.log("HOUR dimension change fired WITHOUT a date");
+          var apiResults = await axios.get(
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_channel_and_hour_of_day&sortOption=sessions&sortOrientation=Desc",
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        } else {
+          console.log("HOUR dimension change fired WITH a date");
+          var apiResults = await axios.get(
+            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+              this.state.fromDate
+            }&toDate=${
+              this.state.toDate
+            }&permutation=group_by_channel_and_hour_of_day&sortOption=sessions&sortOrientation=Desc`,
+            { headers }
+          );
+          console.log(apiResults.data.elasticResult.resultsTable.source);
+          var sourceData = apiResults.data.elasticResult.resultsTable.source;
+          productTestDataHeader = columns;
+          productTestDataBody = sourceData.rows;
+          this.setState({
+            productTestDataHeader: productTestDataHeader,
+            productTableDataBody: productTestDataBody
+          });
+        }
+      } else {
+        this.apiReportHandler();
+      }
     } else {
-      updatedDimensionValue = [
-        {
-          trafficSource: "Source 1",
-          users: "313,450",
-          sessions: "278,423",
-          bounceRate: "29%",
-          pagesPerSession: "4.2",
-          averageSessionDuration: "6 minutes",
-          conversionRate: "16%",
-          orders: "36,581",
-          totalUnitsSold: "19,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$186,746"
-        },
-        {
-          trafficSource: "Source 2",
-          users: "413,450",
-          sessions: "188,423",
-          bounceRate: "29%",
-          pagesPerSession: "3.2",
-          averageSessionDuration: "5 minutes",
-          conversionRate: "16%",
-          orders: "24,581",
-          totalUnitsSold: "22,342",
-          averageOrderValue: "$19.99",
-          totalRevenue: "$146,746"
-        }
-      ];
-      console.log(updatedDimensionValue);
-      this.setState({
-        productTableData: updatedDimensionValue
-      });
+      return null;
     }
   };
 
-  dateChangeHandler = e => {
-    e.preventDefault();
+  saveDimensionChanges = dimension => {
+    var resetValue = dimension;
+    var oldDimensionCheck = this.state.dimensionCheck;
+    var newDimensionCheck = !oldDimensionCheck;
+    console.log("dimension state changing...");
+    console.log("The old dimension check was.. " + oldDimensionCheck);
+    console.log("The new dimension check is.. " + newDimensionCheck);
 
-    console.log(this.state.startDate._d);
-    console.log(this.state.endDate._d);
-  };
-
-  saveChanges = value => {
-    console.log("==== current state value ====");
-    console.log(this.state.value);
-    var resetValue = value;
-    if (value.length > 1) {
+    if (dimension.length > 1) {
       resetValue.shift();
-      console.log(resetValue);
     }
+
+    if (dimension.length < 1) {
+      resetValue = false;
+    }
+
     this.setState(
       {
-        value: resetValue
+        dimension: resetValue,
+        dimensionCheck: newDimensionCheck
       },
       () => {
-        console.log("==== Should be 1 value ====");
-        console.log(this.state.value);
         this.dimensionHandler();
       }
     );
   };
 
+  falseFunc = () => false;
+
   render() {
-    var renderedReportTable = "";
-    var productData = this.state.productTableData;
-    renderedReportTable = productData.map(product => {
-      return (
-        <tr>
-          <td>{product.trafficSource}</td>
-          {this.state.value[0] ? <td>{product.dimension}</td> : null}
-          <td>{product.users}</td>
-          <td>{product.sessions}</td>
-          <td>{product.bounceRate}</td>
-          <td>{product.pagesPerSession}</td>
-          <td>{product.averageSessionDuration}</td>
-          <td>{product.conversionRate}</td>
-          <td>{product.orders}</td>
-          <td>{product.totalUnitsSold}</td>
-          <td>{product.averageOrderValue}</td>
-          <td>
-            <strong className="text-success">{product.totalRevenue}</strong>
-          </td>
-        </tr>
-      );
+    var renderedReportTableHeader = "";
+    var renderedReportTableBody = "";
+    var productDataHeader = this.state.productTestDataHeader;
+    var productData = this.state.productTableDataBody;
+
+    renderedReportTableHeader = productDataHeader.map(header => {
+      return <th>{header.name}</th>;
     });
+
+    renderedReportTableBody = productData.map(product => {
+      var productArray = product;
+      var productRows = productArray.map(data => {
+        return <td>{data}</td>;
+      });
+
+      return <tr>{productRows}</tr>;
+    });
+
     return (
       <div>
         <Row>
@@ -393,6 +586,7 @@ class TrafficSourceReport extends React.Component {
                   }
                   orientation={this.state.orientation}
                   openDirection={this.state.openDirection}
+                  isOutsideRange={this.falseFunc}
                 />
                 <Button
                   type="button"
@@ -407,20 +601,15 @@ class TrafficSourceReport extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col lg="12">
-            <Card>
-              <CardHeader>
-                Chart Data
-                <div className="card-header-actions" />
-              </CardHeader>
-
-              <CardBody>
-                <div className="chart-wrapper">
-                  <Line data={line} options={options} />
-                </div>
-              </CardBody>
-            </Card>
+          <Col sm="12">
+            <ReportBarChart
+              sessionData={this.state.chartSessionData}
+              labelData={this.state.labelData}
+              orderData={this.state.orderData}
+              name={"Product Chart"}
+            />
           </Col>
+
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
@@ -429,62 +618,49 @@ class TrafficSourceReport extends React.Component {
               </CardHeader>
 
               <CardBody>
-                <p>
-                  <i className="icon-wrench mr-2" />
-                  <strong>Secondary Dimensions:</strong>
-                </p>
+                <Row>
+                  <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Secondary Dimensions:</strong>
+                    </p>
 
-                <Select
-                  name="form-field-name2"
-                  value={this.state.value}
-                  options={dimensionOptions}
-                  onChange={this.saveChanges}
-                  multi
-                  className="mb-4"
-                />
-                <Table responsive striped>
-                  <thead>
-                    <tr>
-                      <th>Traffic Source</th>
-                      {this.state.value[0] ? <th>Dimension</th> : null}
-                      <th>Users</th>
-                      <th>Sessions</th>
-                      <th>Bounce Rate</th>
-                      <th>Pages Per Session</th>
-                      <th>Avg. Session Duration</th>
-                      <th>Conversion Rate</th>
-                      <th>Orders</th>
-                      <th>Total Units Sold</th>
-                      <th>Average Order Value</th>
-                      <th>Total Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>{renderedReportTable}</tbody>
-                </Table>
-                <Pagination>
-                  <PaginationItem disabled>
-                    <PaginationLink previous tag="button">
-                      Prev
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink tag="button">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next tag="button">
-                      Next
-                    </PaginationLink>
-                  </PaginationItem>
-                </Pagination>
+                    <Select
+                      name="form-field-name2"
+                      value={this.state.dimension}
+                      options={dimensionOptions}
+                      onChange={this.saveDimensionChanges}
+                      multi
+                      className="mb-4"
+                    />
+                  </Col>
+                  {/* <Col sm="12" lg="3">
+                    <p>
+                      <i className="icon-wrench mr-2" />
+                      <strong>Display Options:</strong>
+                    </p>
+                    <FormGroup>
+                      <CustomInput
+                        type="checkbox"
+                        id="users"
+                        label="users"
+                        name="users"
+                        onChange={this.handleDisplayChange}
+                        checked={this.state.displayOptions.users}
+                      />
+                    </FormGroup>
+                  </Col> */}
+                </Row>
+                <CustomTable
+                  tableData={this.state.productTableDataBody}
+                  columns={columns}
+                  hasPagination
+                  hasSort
+                  originalSize={this.state.productTableDataBody.length}
+                  pageSize={20}
+                >
+                  {this.props.children}
+                </CustomTable>
               </CardBody>
             </Card>
           </Col>
@@ -492,6 +668,7 @@ class TrafficSourceReport extends React.Component {
       </div>
     );
   }
+  i;
 }
 
 export default TrafficSourceReport;
