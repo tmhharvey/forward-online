@@ -390,7 +390,7 @@ class TrafficSourceReport extends React.Component {
         ];
         if (!this.state.dateRange) {
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_channel_and_country_region&sortOption=sessions&sortOrientation=Desc",
+            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=4/25/2019&toDate=6/3/2019&permutation=group_by_channel_and_country_region&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
