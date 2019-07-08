@@ -33,6 +33,8 @@ import tableOptions from "./dashboardData/dimensions";
 
 //Charts
 import ReportBarChart from "../UI/ReportBarChart/ReportBarChart";
+import apiTemplate from "../../config/apiTemplate";
+var defaultRoute = apiTemplate.defaultRoute;
 
 const Widget03 = lazy(() => import("../UI/Widgets/Widget03"));
 const dimensionOptions = tableOptions.dimensions;
@@ -303,19 +305,20 @@ class CompanyDashboard extends React.Component {
     if (!this.state.dateRange) {
       console.log("no date range API call firing");
       var apiResults = await axios.get(
-        "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
+        defaultRoute +
+          "/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_brand&sortOption=brand",
         { headers }
       );
 
       // var countryApiResults = await axios.get(
-      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc",
+      //   defaultRoute + "/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_product_sku_and_country_region&sortOption=sessions&sortOrientation=Desc",
       //   { headers }
       // );
       // console.log("Country API results");
       // console.log(countryApiResults);
 
       // var orderTotalSummary = await axios.get(
-      //   "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/OrderTotalSummaryReport/GetReportResults",
+      //   defaultRoute + "/OrderTotalSummaryReport/GetReportResults",
       //   { headers }
       // );
 
@@ -352,16 +355,17 @@ class CompanyDashboard extends React.Component {
     } else {
       console.log("date range indentified...");
       var apiResults = await axios.get(
-        `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-          this.state.fromDate
-        }&toDate=${
-          this.state.toDate
-        }&permutation=group_by_brand&sortOption=brand`,
+        defaultRoute +
+          `/ProductPerformanceReport/GetReportResults?fromDate=${
+            this.state.fromDate
+          }&toDate=${
+            this.state.toDate
+          }&permutation=group_by_brand&sortOption=brand`,
         { headers }
       );
 
       // var countryApiResults = await axios.get(
-      //   `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
+      //   defaultRoute + `/ProductPerformanceReport/GetReportResults?fromDate=${
       //     this.state.fromDate
       //   }&toDate=${
       //     this.state.toDate

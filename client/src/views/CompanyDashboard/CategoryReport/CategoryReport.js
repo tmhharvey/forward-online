@@ -23,6 +23,8 @@ import ReportBarChart from "../../UI/ReportBarChart/ReportBarChart";
 
 import axios from "axios";
 import "./CategoryReport.scss";
+import apiTemplate from "../../../config/apiTemplate";
+var defaultRoute = apiTemplate.defaultRoute;
 
 const dimensionOptions = tableOptions.dimensions;
 // const displayOptions = tableOptions.displayOptions;
@@ -136,7 +138,8 @@ class CategoryReport extends React.Component {
       // Default API call with no Second Dimension
       if (!this.state.dateRange) {
         var apiResults = await axios.get(
-          "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category&sortOption=sessions&sortOrientation=Desc",
+          defaultRoute +
+            "/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category&sortOption=sessions&sortOrientation=Desc",
           { headers }
         );
 
@@ -162,11 +165,13 @@ class CategoryReport extends React.Component {
         }
       } else {
         console.log("API report fired WITH a date range");
-        var url = `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-          this.state.fromDate
-        }&toDate=${
-          this.state.toDate
-        }&permutation=group_by_category&sortOption=sessions&sortOrientation=Desc`;
+        var url =
+          defaultRoute +
+          `/ProductPerformanceReport/GetReportResults?fromDate=${
+            this.state.fromDate
+          }&toDate=${
+            this.state.toDate
+          }&permutation=group_by_category&sortOption=sessions&sortOrientation=Desc`;
         console.log(url);
         var apiResults = await axios.get(url, { headers });
 
@@ -268,7 +273,8 @@ class CategoryReport extends React.Component {
         if (!this.state.dateRange) {
           console.log("Day of week dimension change fired WITHOUT a DATE");
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=06/01/2019&toDate=06/02/2019&permutation=group_by_category_and_day_of_week&sortOption=sessions&sortOrientation=Desc",
+            defaultRoute +
+              "/ProductPerformanceReport/GetReportResults?fromDate=06/01/2019&toDate=06/02/2019&permutation=group_by_category_and_day_of_week&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult);
@@ -287,11 +293,12 @@ class CategoryReport extends React.Component {
         } else {
           console.log("dimension Day of Week with a date range");
           var apiResults = await axios.get(
-            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-              this.state.fromDate
-            }&toDate=${
-              this.state.toDate
-            }&permutation=group_by_category_and_day_of_week&sortOption=sessions&sortOrientation=Desc`,
+            defaultRoute +
+              `/ProductPerformanceReport/GetReportResults?fromDate=${
+                this.state.fromDate
+              }&toDate=${
+                this.state.toDate
+              }&permutation=group_by_category_and_day_of_week&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
           console.log(apiResults);
@@ -356,7 +363,8 @@ class CategoryReport extends React.Component {
         ];
         if (!this.state.dateRange) {
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category_and_country_region&sortOption=sessions&sortOrientation=Desc",
+            defaultRoute +
+              "/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category_and_country_region&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -369,11 +377,12 @@ class CategoryReport extends React.Component {
           });
         } else {
           var apiResults = await axios.get(
-            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-              this.state.fromDate
-            }&toDate=${
-              this.state.toDate
-            }&permutation=group_by_category_and_country_region&sortOption=sessions&sortOrientation=Desc`,
+            defaultRoute +
+              `/ProductPerformanceReport/GetReportResults?fromDate=${
+                this.state.fromDate
+              }&toDate=${
+                this.state.toDate
+              }&permutation=group_by_category_and_country_region&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -429,7 +438,8 @@ class CategoryReport extends React.Component {
         if (!this.state.dateRange) {
           console.log("HOUR dimension change fired WITHOUT a date");
           var apiResults = await axios.get(
-            "https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category_and_hour_of_day&sortOption=sessions&sortOrientation=Desc",
+            defaultRoute +
+              "/ProductPerformanceReport/GetReportResults?fromDate=1/1/1900&toDate=1/1/2100&permutation=group_by_category_and_hour_of_day&sortOption=sessions&sortOrientation=Desc",
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);
@@ -443,11 +453,12 @@ class CategoryReport extends React.Component {
         } else {
           console.log("HOUR dimension change fired WITH a date");
           var apiResults = await axios.get(
-            `https://cors-anywhere.herokuapp.com/http://97.68.199.221:12635/api/reporting/v0.1/ProductPerformanceReport/GetReportResults?fromDate=${
-              this.state.fromDate
-            }&toDate=${
-              this.state.toDate
-            }&permutation=group_by_category_and_hour_of_day&sortOption=sessions&sortOrientation=Desc`,
+            defaultRoute +
+              `/ProductPerformanceReport/GetReportResults?fromDate=${
+                this.state.fromDate
+              }&toDate=${
+                this.state.toDate
+              }&permutation=group_by_category_and_hour_of_day&sortOption=sessions&sortOrientation=Desc`,
             { headers }
           );
           console.log(apiResults.data.elasticResult.resultsTable.source);

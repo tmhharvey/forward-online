@@ -36,12 +36,6 @@ const CompanyRegister = Loadable({
   loading
 });
 
-const CompanyBankAuth = Loadable({
-  loader: () =>
-    import("./views/CompanyDashboard/CompanyBankAuth/CompanyBankAuth"),
-  loading
-});
-
 const DefaultLogin = Loadable({
   loader: () => import("./views/UI/Login/Login"),
   loading
