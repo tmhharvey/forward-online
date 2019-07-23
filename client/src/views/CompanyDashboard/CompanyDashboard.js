@@ -15,6 +15,7 @@ import "./CompanyDashboard.scss";
 import GoogleMaps from "../UI/GoogleMaps/GoogleMaps";
 import axios from "axios";
 import apiAuth from "./apiAuth";
+import mathHelper from "../../utils/mathHelpers";
 
 import CustomTable from "../UI/CustomTable/CustomTable";
 
@@ -288,15 +289,19 @@ class CompanyDashboard extends React.Component {
       },
       {
         value: "eComm Revenue",
-        elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+        elements: (index, row) => <div>${!row[5] ? 0 : Math.round(row[5])}</div>
       },
       {
         value: "Conversion Rate",
-        elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+        elements: (index, row) => (
+          <div>{!row[6] ? 0 : mathHelper.toPercentage(row[6])}%</div>
+        )
       },
       {
         value: "Avg Order Value",
-        elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+        elements: (index, row) => (
+          <div>${!row[7] ? 0 : mathHelper.toDecimal(row[7])}</div>
+        )
       }
     ];
 

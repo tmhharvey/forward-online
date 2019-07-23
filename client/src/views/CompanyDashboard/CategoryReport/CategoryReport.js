@@ -4,6 +4,7 @@ import { Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import apiAuth from "../apiAuth";
+import mathHelper from "../../../utils/mathHelpers";
 
 // React DateRangePicker
 import "react-dates/initialize";
@@ -101,36 +102,42 @@ class CategoryReport extends React.Component {
       columns = [
         {
           value: "Category",
-          elements: (index, row) => <div>{!row[0] ? "n/a" : row[0]}</div>
+          elements: (index, row) => <div>{!row[0] ? 0 : row[0]}</div>
         },
 
         {
           value: "Sessions",
-          elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+          elements: (index, row) => <div>{!row[1] ? 0 : row[1]}</div>
         },
         {
           value: "Users",
-          elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          elements: (index, row) => <div>{!row[2] ? 0 : row[2]}</div>
         },
         {
           value: "Total Units",
-          elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          elements: (index, row) => <div>{!row[3] ? 0 : row[3]}</div>
         },
         {
           value: "Orders",
-          elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          elements: (index, row) => <div>{!row[4] ? 0 : row[4]}</div>
         },
         {
           value: "eCommerce Revenue",
-          elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          elements: (index, row) => (
+            <div>${!row[5] ? 0 : Math.round(row[5])}</div>
+          )
         },
         {
           value: "Conversion Rate",
-          elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          elements: (index, row) => (
+            <div>{!row[6] ? 0 : mathHelper.toPercentage(row[6])}%</div>
+          )
         },
         {
           value: "Avg Order Value",
-          elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          elements: (index, row) => (
+            <div>${!row[7] ? 0 : mathHelper.toDecimal(row[7])}</div>
+          )
         }
       ];
 

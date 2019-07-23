@@ -4,6 +4,7 @@ import { Line } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import apiAuth from "../apiAuth";
+import mathHelper from "../../../utils/mathHelpers";
 
 // React DateRangePicker
 import "react-dates/initialize";
@@ -126,15 +127,21 @@ class ProductReport extends React.Component {
         },
         {
           value: "eCommerce Revenue",
-          elements: (index, row) => <div>{!row[6] ? "n/a" : row[6]}</div>
+          elements: (index, row) => (
+            <div>${!row[6] ? 0 : Math.round(row[6])}</div>
+          )
         },
         {
           value: "Conversion Rate",
-          elements: (index, row) => <div>{!row[7] ? "n/a" : row[7]}</div>
+          elements: (index, row) => (
+            <div>{!row[7] ? 0 : mathHelper.toPercentage(row[7])}%</div>
+          )
         },
         {
           value: "Avg Order Value",
-          elements: (index, row) => <div>{!row[8] ? "n/a" : row[8]}</div>
+          elements: (index, row) => (
+            <div>${!row[8] ? 0 : mathHelper.toDecimal(row[8])}</div>
+          )
         }
       ];
 
