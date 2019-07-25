@@ -102,29 +102,39 @@ class CategoryReport extends React.Component {
       columns = [
         {
           value: "Category",
-          elements: (index, row) => <div>{!row[0] ? 0 : row[0]}</div>
+          elements: (index, row) => (
+            <div>{!row[0] ? 0 : row[0].toLocaleString()}</div>
+          )
         },
 
         {
           value: "Sessions",
-          elements: (index, row) => <div>{!row[1] ? 0 : row[1]}</div>
+          elements: (index, row) => (
+            <div>{!row[1] ? 0 : row[1].toLocaleString()}</div>
+          )
         },
         {
           value: "Users",
-          elements: (index, row) => <div>{!row[2] ? 0 : row[2]}</div>
+          elements: (index, row) => (
+            <div>{!row[2] ? 0 : row[2].toLocaleString()}</div>
+          )
         },
         {
           value: "Total Units",
-          elements: (index, row) => <div>{!row[3] ? 0 : row[3]}</div>
+          elements: (index, row) => (
+            <div>{!row[3] ? 0 : row[3].toLocaleString()}</div>
+          )
         },
         {
           value: "Orders",
-          elements: (index, row) => <div>{!row[4] ? 0 : row[4]}</div>
+          elements: (index, row) => (
+            <div>{!row[4] ? 0 : row[4].toLocaleString()}</div>
+          )
         },
         {
           value: "eCommerce Revenue",
           elements: (index, row) => (
-            <div>${!row[5] ? 0 : Math.round(row[5])}</div>
+            <div>${!row[5] ? 0 : Math.round(row[5]).toLocaleString()}</div>
           )
         },
         {
@@ -136,7 +146,9 @@ class CategoryReport extends React.Component {
         {
           value: "Avg Order Value",
           elements: (index, row) => (
-            <div>${!row[7] ? 0 : mathHelper.toDecimal(row[7])}</div>
+            <div>
+              ${!row[7] ? 0 : mathHelper.toDecimal(row[7]).toLocaleString()}
+            </div>
           )
         }
       ];
@@ -486,6 +498,8 @@ class CategoryReport extends React.Component {
   };
 
   saveDimensionChanges = dimension => {
+    console.log("DIMENSION");
+    console.log(dimension);
     var resetValue = dimension;
     var oldDimensionCheck = this.state.dimensionCheck;
     var newDimensionCheck = !oldDimensionCheck;
@@ -536,6 +550,7 @@ class CategoryReport extends React.Component {
     return (
       <div>
         <Row>
+          <Col lg="7" />
           <Col lg="5">
             <Card>
               {/* <CardHeader>

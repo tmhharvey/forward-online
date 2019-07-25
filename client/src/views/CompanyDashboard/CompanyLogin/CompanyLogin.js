@@ -159,28 +159,17 @@ class CompanyLogin extends Component {
                     </CardBody>
                   </Card>
                   <Card
-                    className="text-white bg-primary py-5 d-md-down-none"
+                    className="bg-primary py-5 d-md-down-none"
                     style={{ width: "44%" }}
                   >
                     <CardBody className="text-center">
                       <div>
                         <h2>Sign up</h2>
                         <p>
-                          All the analytics you ever wanted, all in one
-                          dashboard. Sign-up today!
+                          Don’t have a Forward.Online account yet? Reach out
+                          here to signup!
                         </p>
-
-                        <Button
-                          color="primary"
-                          className="mt-3"
-                          active
-                          tabIndex={-1}
-                          onClick={e => {
-                            this.registerRedirect(e);
-                          }}
-                        >
-                          Register Now!
-                        </Button>
+                        <p className="mt-3">Dan.S@forwardonline.net</p>
                       </div>
                     </CardBody>
                   </Card>

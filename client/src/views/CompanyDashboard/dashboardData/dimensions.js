@@ -6,3 +6,5 @@ exports.dimensions = [
 ];
 
 exports.displayOptions = [{ value: "Users", label: "Users" }];
+
+exports.widgets = [{ value: "totalOrders", label: "Total Orders" }];

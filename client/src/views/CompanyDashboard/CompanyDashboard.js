@@ -31,14 +31,16 @@ import moment from "moment";
 import Select from "react-select";
 import "react-select/dist/react-select.min.css";
 import tableOptions from "./dashboardData/dimensions";
+import widgetOptions from "./dashboardData/widgetMetrics";
 
 //Charts
 import ReportBarChart from "../UI/ReportBarChart/ReportBarChart";
 import apiTemplate from "../../config/apiTemplate";
 var defaultRoute = apiTemplate.defaultRoute;
 
-const Widget03 = lazy(() => import("../UI/Widgets/Widget03"));
 const dimensionOptions = tableOptions.dimensions;
+var widgetSelector = widgetOptions.dimensions;
+console.log(widgetSelector);
 
 // Card Chart 1
 const cardChartData1 = {
@@ -240,13 +242,16 @@ var auth = "Bearer " + apiAuth.auth;
 
 var columns = [];
 
+// ==================================================================================================================
+// ==================================================================================================================
+// ==================================================================================================================
+
 class CompanyDashboard extends React.Component {
   state = {
     productTestDataHeader: [],
     productTableDataBody: [],
     fromDate: "",
     toDate: "",
-    dimension: [""],
     displayOptions: {
       users: true
     },
@@ -256,12 +261,266 @@ class CompanyDashboard extends React.Component {
     totalUnique: null,
     totalOrders: null,
     totalSales: null,
+    totalUnits: null,
     chartSessionData: [],
-    labelData: []
+    labelData: [],
+    widgetDimension1: [],
+    widgetDimension2: [],
+    widgetDimension3: [],
+    widgetDimension4: [],
+    widgetDimensionCheck: false
   };
 
   componentDidMount = () => {
     this.apiReportHandler();
+  };
+
+  widgetMetricHandler = (widgetNumber, metric, title) => {
+    console.log("========== Widget Metric Handler ==========");
+    console.log(widgetNumber);
+    console.log(metric);
+
+    switch (metric) {
+      case "totalSessions":
+        switch (widgetNumber) {
+          case 1:
+            this.setState({
+              widgetOneMetric: this.state.totalSessions,
+              widgetOneTitle: title
+            });
+            break;
+          case 2:
+            this.setState({
+              widgetTwoMetric: this.state.totalSessions,
+              widgetTwoTitle: title
+            });
+            break;
+          case 3:
+            this.setState({
+              widgetThreeMetric: this.state.totalSessions,
+              widgetThreeTitle: title
+            });
+            break;
+          case 4:
+            this.setState({
+              widgetFourMetric: this.state.totalSessions,
+              widgetFourTitle: title
+            });
+            break;
+
+          default:
+            return null;
+            break;
+        }
+        break;
+      case "totalUsers":
+        switch (widgetNumber) {
+          case 1:
+            this.setState({
+              widgetOneMetric: this.state.totalUnique,
+              widgetOneTitle: title
+            });
+            break;
+          case 2:
+            this.setState({
+              widgetTwoMetric: this.state.totalUnique,
+              widgetTwoTitle: title
+            });
+            break;
+          case 3:
+            this.setState({
+              widgetThreeMetric: this.state.totalUnique,
+              widgetThreeTitle: title
+            });
+            break;
+          case 4:
+            this.setState({
+              widgetFourMetric: this.state.totalUnique,
+              widgetFourTitle: title
+            });
+            break;
+
+          default:
+            return null;
+            break;
+        }
+        break;
+      case "totalOrders":
+        switch (widgetNumber) {
+          case 1:
+            this.setState({
+              widgetOneMetric: this.state.totalOrders,
+              widgetOneTitle: title
+            });
+            break;
+          case 2:
+            this.setState({
+              widgetTwoMetric: this.state.totalOrders,
+              widgetTwoTitle: title
+            });
+            break;
+          case 3:
+            this.setState({
+              widgetThreeMetric: this.state.totalOrders,
+              widgetThreeTitle: title
+            });
+            break;
+          case 4:
+            this.setState({
+              widgetFourMetric: this.state.totalOrders,
+              widgetFourTitle: title
+            });
+            break;
+
+          default:
+            return null;
+            break;
+        }
+        break;
+      case "totalSales":
+        switch (widgetNumber) {
+          case 1:
+            this.setState({
+              widgetOneMetric: this.state.totalSales,
+              widgetOneTitle: title
+            });
+            break;
+          case 2:
+            this.setState({
+              widgetTwoMetric: this.state.totalSales,
+              widgetTwoTitle: title
+            });
+            break;
+          case 3:
+            this.setState({
+              widgetThreeMetric: this.state.totalSales,
+              widgetThreeTitle: title
+            });
+            break;
+          case 4:
+            this.setState({
+              widgetFourMetric: this.state.totalSales,
+              widgetFourTitle: title
+            });
+            break;
+
+          default:
+            return null;
+            break;
+        }
+        break;
+      case "totalUnits":
+        switch (widgetNumber) {
+          case 1:
+            this.setState({
+              widgetOneMetric: this.state.totalUnits,
+              widgetOneTitle: title
+            });
+            break;
+          case 2:
+            this.setState({
+              widgetTwoMetric: this.state.totalUnits,
+              widgetTwoTitle: title
+            });
+            break;
+          case 3:
+            this.setState({
+              widgetThreeMetric: this.state.totalUnits,
+              widgetThreeTitle: title
+            });
+            break;
+          case 4:
+            this.setState({
+              widgetFourMetric: this.state.totalUnits,
+              widgetFourTitle: title
+            });
+            break;
+
+          default:
+            return null;
+            break;
+        }
+        break;
+
+      // code to be executed if n doesn't match any cases
+      default:
+        console.log("it defaulted to nothing?");
+
+        break;
+    }
+  };
+
+  saveWidgetDimensionChanges = (event, widgetNumber) => {
+    var resetValue = event;
+    var oldDimensionCheck = this.state.widgetDimensionCheck;
+    var newDimensionCheck = !oldDimensionCheck;
+    console.log("dimension state changing...");
+    console.log("The old dimension check was.. " + oldDimensionCheck);
+    console.log("The new dimension check is.. " + newDimensionCheck);
+
+    if (event.length > 1) {
+      resetValue.shift();
+    }
+
+    if (event.length < 1) {
+      resetValue = false;
+    }
+
+    console.log("WIDGET DIMENSION");
+    console.log(event);
+    var changedMetric = event[0].value;
+    var changedTitle = event[0].label;
+
+    switch (widgetNumber) {
+      case 1:
+        this.setState(
+          {
+            widgetDimension1: resetValue,
+            widgetDimensionCheck: newDimensionCheck
+          },
+          () => {
+            this.widgetMetricHandler(widgetNumber, changedMetric, changedTitle);
+          }
+        );
+        break;
+      case 2:
+        this.setState(
+          {
+            widgetDimension2: resetValue,
+            widgetDimensionCheck: newDimensionCheck
+          },
+          () => {
+            this.widgetMetricHandler(widgetNumber, changedMetric, changedTitle);
+          }
+        );
+        break;
+      case 3:
+        this.setState(
+          {
+            widgetDimension3: resetValue,
+            widgetDimensionCheck: newDimensionCheck
+          },
+          () => {
+            this.widgetMetricHandler(widgetNumber, changedMetric, changedTitle);
+          }
+        );
+        break;
+      case 4:
+        this.setState(
+          {
+            widgetDimension4: resetValue,
+            widgetDimensionCheck: newDimensionCheck
+          },
+          () => {
+            this.widgetMetricHandler(widgetNumber, changedMetric, changedTitle);
+          }
+        );
+        break;
+
+      default:
+        return null;
+        break;
+    }
   };
 
   apiReportHandler = async () => {
@@ -273,23 +532,33 @@ class CompanyDashboard extends React.Component {
     columns = [
       {
         value: "Sessions",
-        elements: (index, row) => <div>{!row[1] ? "n/a" : row[1]}</div>
+        elements: (index, row) => (
+          <div>{!row[1] ? "n/a" : row[1].toLocaleString()}</div>
+        )
       },
       {
         value: "Users",
-        elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+        elements: (index, row) => (
+          <div>{!row[2] ? "n/a" : row[2].toLocaleString()}</div>
+        )
       },
       {
         value: "Total Units",
-        elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+        elements: (index, row) => (
+          <div>{!row[3] ? "n/a" : row[3].toLocaleString()}</div>
+        )
       },
       {
         value: "Orders",
-        elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+        elements: (index, row) => (
+          <div>{!row[4] ? "n/a" : row[4].toLocaleString()}</div>
+        )
       },
       {
         value: "eComm Revenue",
-        elements: (index, row) => <div>${!row[5] ? 0 : Math.round(row[5])}</div>
+        elements: (index, row) => (
+          <div>${!row[5] ? 0 : Math.round(row[5]).toLocaleString()}</div>
+        )
       },
       {
         value: "Conversion Rate",
@@ -300,7 +569,9 @@ class CompanyDashboard extends React.Component {
       {
         value: "Avg Order Value",
         elements: (index, row) => (
-          <div>${!row[7] ? 0 : mathHelper.toDecimal(row[7])}</div>
+          <div>
+            ${!row[7] ? 0 : mathHelper.toDecimal(row[7]).toLocaleString()}
+          </div>
         )
       }
     ];
@@ -404,18 +675,31 @@ class CompanyDashboard extends React.Component {
     var totaledUnique = 0;
     var totaledOrders = 0;
     var totaledSales = 0;
+    var totaledUnits = 0;
+    console.log("AGGREGATE DATA HANDLER");
+    console.log(aggregateData);
 
     var dataMap = await aggregateData.map(data => {
       totaledSessionData = totaledSessionData + data[1];
       totaledUnique = totaledUnique + data[2];
       totaledOrders = totaledOrders + data[4];
       totaledSales = totaledSales + data[5];
+      totaledUnits = totaledUnits + data[3];
     });
     this.setState({
+      totalUnits: totaledUnits,
       totalSessions: totaledSessionData,
+      widgetTwoMetric: totaledSessionData,
+      widgetTwoTitle: "Total Sessions",
       totalUnique: totaledUnique,
+      widgetOneMetric: totaledUnique,
+      widgetOneTitle: "Total Users",
       totalOrders: totaledOrders,
-      totalSales: totaledSales.toFixed(2)
+      widgetThreeMetric: totaledOrders,
+      widgetThreeTitle: "Total Orders",
+      totalSales: totaledSales.toFixed(2),
+      widgetFourMetric: totaledSales.toFixed(2),
+      widgetFourTitle: "Total Sales"
     });
   };
 
@@ -469,6 +753,7 @@ class CompanyDashboard extends React.Component {
     return (
       <div>
         <Row>
+          <Col lg="7" />
           <Col lg="5">
             <Card>
               {/* <CardHeader>
@@ -508,15 +793,28 @@ class CompanyDashboard extends React.Component {
         <Row>
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-cyan theme-color">
+              <Select
+                name="form-field-name2"
+                value={this.state.widgetDimension1}
+                options={widgetSelector}
+                onChange={e => {
+                  this.saveWidgetDimensionChanges(e, 1);
+                }}
+                multi
+                className="mb-4"
+              />
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="icon-people fa-2x" />
                 </ButtonGroup>
+
                 <div className="text-value">
                   {" "}
-                  {this.state.totalUnique ? this.state.totalUnique : "N/A"}
+                  {this.state.widgetOneMetric
+                    ? this.state.widgetOneMetric
+                    : "N/A"}
                 </div>
-                <div> Unique Visitors</div>
+                <div>{this.state.widgetOneTitle}</div>
               </CardBody>
               <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
                 <Line
@@ -529,14 +827,26 @@ class CompanyDashboard extends React.Component {
           </Col>
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-primary">
+              <Select
+                name="form-field-name2"
+                value={this.state.widgetDimension2}
+                options={widgetSelector}
+                onChange={e => {
+                  this.saveWidgetDimensionChanges(e, 2);
+                }}
+                multi
+                className="mb-4"
+              />
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="fa fa-vcard-o fa-2x" />
                 </ButtonGroup>
                 <div className="text-value">
-                  {this.state.totalSessions ? this.state.totalSessions : "N/A"}
+                  {this.state.widgetTwoMetric
+                    ? this.state.widgetTwoMetric
+                    : "N/A"}
                 </div>
-                <div> Total Sessions</div>
+                <div>{this.state.widgetTwoTitle}</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -552,15 +862,27 @@ class CompanyDashboard extends React.Component {
           </Col>
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-success">
+              <Select
+                name="form-field-name2"
+                value={this.state.widgetDimension3}
+                options={widgetSelector}
+                onChange={e => {
+                  this.saveWidgetDimensionChanges(e, 3);
+                }}
+                multi
+                className="mb-4"
+              />
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="fa fa-cart-plus fa-2x" />
                 </ButtonGroup>
                 <div className="text-value">
                   {" "}
-                  {this.state.totalOrders ? this.state.totalOrders : "N/A"}
+                  {this.state.widgetThreeMetric
+                    ? this.state.widgetThreeMetric
+                    : "N/A"}
                 </div>
-                <div> Total Orders</div>
+                <div>{this.state.widgetThreeTitle}</div>
               </CardBody>
               <div
                 className="chart-wrapper mt-3 mx-3"
@@ -577,14 +899,27 @@ class CompanyDashboard extends React.Component {
 
           <Col sm="6" md="4" lg="3">
             <Card className="text-white bg-indigo theme-color">
+              <Select
+                name="form-field-name2"
+                value={this.state.widgetDimension4}
+                options={widgetSelector}
+                onChange={e => {
+                  this.saveWidgetDimensionChanges(e, 4);
+                }}
+                multi
+                className="mb-4"
+              />
               <CardBody className="pb-0">
                 <ButtonGroup className="float-right">
                   <i className="fa fa-money fa-2x" />
                 </ButtonGroup>
                 <div className="text-value">
-                  ${this.state.totalSales ? this.state.totalSales : "N/A"}
+                  $
+                  {this.state.widgetFourMetric
+                    ? this.state.widgetFourMetric
+                    : "N/A"}
                 </div>
-                <div> Total Sales</div>
+                <div>{this.state.widgetFourTitle}</div>
               </CardBody>
               <div className="chart-wrapper mt-3" style={{ height: "70px" }}>
                 <Line

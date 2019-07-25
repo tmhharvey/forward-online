@@ -111,24 +111,32 @@ class ProductReport extends React.Component {
         },
         {
           value: "Sessions",
-          elements: (index, row) => <div>{!row[2] ? "n/a" : row[2]}</div>
+          elements: (index, row) => (
+            <div>{!row[2] ? "n/a" : row[2].toLocaleString()}</div>
+          )
         },
         {
           value: "Users",
-          elements: (index, row) => <div>{!row[3] ? "n/a" : row[3]}</div>
+          elements: (index, row) => (
+            <div>{!row[3] ? "n/a" : row[3].toLocaleString()}</div>
+          )
         },
         {
           value: "Total Units",
-          elements: (index, row) => <div>{!row[4] ? "n/a" : row[4]}</div>
+          elements: (index, row) => (
+            <div>{!row[4] ? "n/a" : row[4].toLocaleString()}</div>
+          )
         },
         {
           value: "Orders",
-          elements: (index, row) => <div>{!row[5] ? "n/a" : row[5]}</div>
+          elements: (index, row) => (
+            <div>{!row[5] ? "n/a" : row[5].toLocaleString()}</div>
+          )
         },
         {
           value: "eCommerce Revenue",
           elements: (index, row) => (
-            <div>${!row[6] ? 0 : Math.round(row[6])}</div>
+            <div>${!row[6] ? 0 : Math.round(row[6]).toLocaleString()}</div>
           )
         },
         {
@@ -140,7 +148,9 @@ class ProductReport extends React.Component {
         {
           value: "Avg Order Value",
           elements: (index, row) => (
-            <div>${!row[8] ? 0 : mathHelper.toDecimal(row[8])}</div>
+            <div>
+              ${!row[8] ? 0 : mathHelper.toDecimal(row[8]).toLocaleString()}
+            </div>
           )
         }
       ];
@@ -551,6 +561,7 @@ class ProductReport extends React.Component {
     return (
       <div>
         <Row>
+          <Col lg="7" />
           <Col lg="5">
             <Card>
               {/* <CardHeader>
