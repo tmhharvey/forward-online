@@ -5,6 +5,7 @@ import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import apiAuth from "../apiAuth";
 import mathHelper from "../../../utils/mathHelpers";
+import SimpleTooltip from "../../UI/SimpleTooltip/SimpleTooltip";
 
 // React DateRangePicker
 import "react-dates/initialize";
@@ -42,6 +43,7 @@ class CategoryReport extends React.Component {
   state = {
     productTestDataHeader: [],
     productTableDataBody: [],
+    tooltipOpen: false,
     fromDate: "",
     toDate: "",
     dimension: [""],
@@ -57,6 +59,12 @@ class CategoryReport extends React.Component {
 
   componentDidMount = () => {
     this.apiReportHandler();
+  };
+
+  toggle = () => {
+    this.setState({
+      tooltipOpen: !this.state.tooltipOpen
+    });
   };
 
   chartDataHandler = async aggregateData => {
@@ -101,7 +109,28 @@ class CategoryReport extends React.Component {
       };
       columns = [
         {
-          value: "Category",
+          value: (
+            <>
+              <div>
+                Category{" "}
+                <i class="fa fa-question-circle fa-lg pr-4" id={"someid"} />
+              </div>
+
+              <SimpleTooltip placement="right" target={"someid"}>
+                <Row>
+                  <Col md="12" className="text-center">
+                    <h4>Category</h4>
+                  </Col>
+                  <Col md="12" className="text-left">
+                    <p>Descriptiion</p>
+                  </Col>
+                  <Col md="12" className="text-left">
+                    <p>Hello!</p>
+                  </Col>
+                </Row>
+              </SimpleTooltip>
+            </>
+          ),
           elements: (index, row) => (
             <div>{!row[0] ? 0 : row[0].toLocaleString()}</div>
           )
@@ -529,6 +558,7 @@ class CategoryReport extends React.Component {
   falseFunc = () => false;
 
   render() {
+    this.toggle = this.toggle.bind(this);
     var renderedReportTableHeader = "";
     var renderedReportTableBody = "";
     var productDataHeader = this.state.productTestDataHeader;
@@ -638,6 +668,7 @@ class CategoryReport extends React.Component {
                     </FormGroup>
                   </Col> */}
                 </Row>
+
                 <CustomTable
                   tableData={this.state.productTableDataBody}
                   columns={columns}
